@@ -1,0 +1,113 @@
+{
+	"properties": {
+		"compress-js": "uglifyjs",
+		"compress-css": "cleancss",
+		"compress-html": "htmlcompress",
+		"compress-image": "smushit"
+	},
+	"rules": {
+		"base":{
+			"js": {
+				"match-pattern": ["\\.js$", "i"],
+				"commands": ["${compress-js}"]
+			},
+			"less": {
+				"match-pattern": ["\\.less$", "i"],
+				"commands": ["less"]
+			},
+			"css": {
+				"match-pattern": ["\\.css$", "i"],
+				"commands": ["base64", "${compress-css}"]
+			},
+			"image": {
+				"match-pattern": ["\\.(png|jpeg|jpg|gif)$", "i"],
+				"commands": ["${compress-image}"]
+			},
+			"html": {
+				"match-pattern": ["\\.html$", "i"],
+				"commands": ["${compress-html}"]
+			}
+		},
+		"min":{
+
+			"extend-rule": "base",
+
+			"js": {
+				"match-pattern": ["^((?!-min\\.js).)*js$", "i"],
+				"output-rule": "#{0}-min.js"
+			},
+			"css": {
+				"match-pattern": ["^((?!-min\\.css).)*css$", "i"],
+				"output-rule": "#{0}-min.css"
+			},
+			"image": {
+				"match-pattern": ["^((?!-min\\.(png|jpeg|jpg|gif)).)*(png|jpeg|jpg|gif)$", "i"],
+				"output-rule": "#{0}-min.#{1}"
+			}
+		},
+		"version":{
+
+			"extend-rule": "base",
+
+			"js": {
+				"output-rule": "#{0}-#{version}.js"
+			},
+
+			"css": {
+				"output-rule": "#{0}-#{version}.css"
+			}
+		}
+	},
+	"commands": {
+		"uglifyjs": {
+			"file": "commands/UglifyJSCommand.js"
+		},
+		"less": {
+			"file": "commands/LessCommand.js"
+		},
+		"base64": {
+			"file": "commands/Base64CSSCommand.js"
+		},
+		"cleancss": {
+			"file": "commands/CleanCSSCommand.js"
+		},
+		"smushit": {
+			"file": "commands/SmushitCommand.js"
+		}
+	},
+	"listeners":{
+		"logger": {
+			"file": "listeners/LoggerListener.js"
+		},
+		"git-pull": {
+			"file": "listeners/GitPullListener.js"
+		},
+		"git-push": {
+			"file": "listeners/GitPushListener.js"
+		},
+		"svn-update": {
+			"file": "listeners/SVNUpdateListener.js"
+		},
+		"svn-commit": {
+			"file": "listeners/SVNCommitListener.js"
+		},
+		"send-to-remote-server": {
+			"file": "listeners/SendToRemoteServerListener.js"
+		},
+		"http-listener":{
+			"file": "listeners/HTTPListener.js"
+		}
+	},
+	"tasks": {
+		"default": {
+			"rule": "min",
+			"rule-commands": ["image", "js", "css"],
+			"file-filter": null,
+			"basedir": "test/src",
+			"builddir": "test/build",
+			"listeners": [
+				"logger"
+			]
+		}
+	}
+}
