@@ -46,12 +46,11 @@ exports.run = function(inputs, settings){
 		var task = {
 			"rule": settings.rule || "min",
 			"rule-commands": ["image", "js", "css"],
-			"file-filter": [inputs, "i"],
+			"file-filter": inputs,
 			"basedir": basedir,
 			"builddir": settings.builddir || basedir,
 			"listeners": ["logger"]
 		}
-		console.log(task.builddir);
 
 		project.addTask("terminal", task);
 		project.execute("terminal");
