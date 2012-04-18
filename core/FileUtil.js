@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+	util = require('util');
 
 /**
  * 遍历某个文件夹下的所有文件和文件夹
@@ -79,4 +80,50 @@ exports.list = function(dir, options){
 		result.push(item);
 	}, options);
 	return result;
+};
+
+/**
+ * copy file
+ */
+exports.copy = function (src, dst, callback) {
+    fs.stat(dst, function(err){
+		if (!err) {
+			return callback(new Error("File " + dst + " exists."));
+		}
+
+		var is = fs.createReadStream(src),
+			os = fs.createWriteStream(dst);
+
+		try{
+			util.pump(is, os, callback);
+		}catch(e){
+			return callback(e);
+		}
+	});
+};
+
+/**
+ * move file
+ */
+exports.move = function (src, dst, cabllback) {
+
+	fs.stat(dst, function (err) {
+		if (!err) {
+			return cabllback(new Error("File " + dst + " exists."));
+		}
+
+		fs.rename(src, dst, function(err) {
+			if (!err) {
+				return cabllback(null);
+			}
+			exports.copy(src, dst, function(err) {
+				if (!err) {
+					fs.unlink(src, cabllback);
+				} else {
+					cabllback(err);
+				}
+			});
+		});
+
+	});
 };

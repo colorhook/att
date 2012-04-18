@@ -6,24 +6,35 @@ var transform = exports.transform = function(input){
 }
 
 /**
- * @option input {String|Optional}
- * @option inputFileName {String|Optional}
- * @option outputFileName {String|Optional}
+ * @name cleancss
+ */
+exports.name = "cleancss";
+
+/**
+ * @option from {String}
+ * @option to {String}
  * @option charset {String|Optional} default 'utf-8'
  */
-exports.execute = function(options, success, fail){
+exports.execute = function(options, callback){
 	var fileContent,
+		from = options.from,
+		to = options.to,
 		charset = options.charset || "utf-8";
-	if(!options.input && options.inputFileName){
-		options.input = fs.readFileSync(options.inputFileName, charset);
+
+	if(!from || !to){
+		return callback(new Error("The from and to options are required"));
 	}
-	if(options.input){
-		fileContent = transform(options.input);
-		if(options.outputFileName){
-			fs.writeFileSync(options.outputFileName, fileContent, charset);
-		}
-		success && success(fileContent);
-	}else{
-		fail && fail(null);
+
+	try{
+		fileContent = fs.readFileSync(from, charset);
+	}catch(err){
+		return callback(err);
 	}
+	fileContent = transform(fileContent);
+	try{
+		fs.writeFileSync(to, fileContent, charset);
+	}catch(err){
+		return callback(err);
+	}
+	return callback();
 };

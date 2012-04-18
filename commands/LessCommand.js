@@ -2,33 +2,45 @@ var fs = require('fs'),
 	less = require('less');
 
 
+
 /**
- * @option input {String|Optional}
- * @option inputFileName {String|Optional}
- * @option outputFileName {String|Optional}
- * @option compress {Boolean|Optional}
- * @option charset {String|Optional} default 'utf-8'
+ * @name less
  */
-exports.execute = function(options, success, fail){
-	var fileContent,
+exports.name = "less";
+
+/**
+ * @option from
+ * @option to
+ */
+exports.execute = function(options, callback){
+
+	var from = options.from,
+		to = options.to,
+		fileContent,
+		parser = new (less.Parser)(options),
 		charset = options.charset || "utf-8";
-	if(!options.input && options.inputFileName){
-		options.input = fs.readFileSync(options.inputFileName, charset);
+
+	if(!from || !to){
+		return callback(new Error("The from and to options are required"));
 	}
-	if(options.input){
-		var parser = new(less.Parser)(options);
-		parser.parse(options.input, function (e, tree) {
-			if(e){
-				fail && fail(null);
-				return;
-			}
-			fileContent = tree.toCSS({ compress: options.compress }); 
-			if(options.outputFileName){
-				fs.writeFileSync(options.outputFileName, fileContent, charset);
-			}
-			success && success(fileContent);
-		});
-	}else{
-		fail && fail(null);
+
+	try{
+		fileContent = fs.readFileSync(from, charset);
+	}catch(err){
+		return callback(err);
 	}
+
+	parser.parse(fileContent, function (e, tree) {
+		if(e){
+			return callback(e);
+		}
+		fileContent = tree.toCSS({ compress: options.compress }); 
+		
+		try{
+			fs.writeFileSync(to, fileContent, charset);
+		}catch(e2){
+			return callback(e2);
+		}
+		return callback();
+	});
 };

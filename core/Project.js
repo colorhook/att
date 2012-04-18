@@ -3,7 +3,8 @@ var fs = require("node-fs"),
 	path = require('path'),
 	util = require('util'),
 	events = require("events"),
-	FileUtil = require("./FileUtil.js");
+	FileUtil = require("./FileUtil.js"),
+	commandManager = require("./CommandManager.js").commandManager;
 
 
 /**
@@ -16,8 +17,6 @@ var doChainTask = function(tasks, method, completed){
 	}
 	var task = tasks.shift();
 	method(task, function(){
-		doChainTask(tasks, method, completed);
-	}, function(){
 		doChainTask(tasks, method, completed);
 	});
 };
@@ -45,19 +44,16 @@ var readFileComment = function(file, key){
  * @constructor
  * @description 定义一个工程
  */
-var Project = function(options){
+var Project = function(){
 	events.EventEmitter.call(this);
 	this.properties = {};
 	this.commands = {};
 	this.listeners = {};
-	this.tasks = {};
-	this.rules = {};
+	this.targets = {};
 	this.verbose = true;
-	this.logLevel = "log";
-	this.ignoreConfirm = false;
+	this.silence = false;
 	this._beforeCallbacks = [];
 	this._afterCallbacks = [];
-	this.initOptions(options);
 };
 
 
@@ -89,14 +85,7 @@ Project.format = function(str, dict){
 	return str;
 };
 
-
-/**
- * @description 在控制台中输出日志
- */
 Project.prototype.log = function(type, message){
-	if(!this.verbose){
-		return;
-	}
 	var map = {
 			"log" : 0,
 			"info" : 1,
@@ -142,43 +131,7 @@ Project.prototype.getProperty = function(key){
 	var value = this.properties[key];
 	return this.format(value);
 };
-/**
- * @description 为工程中添加一个Rule
- */
-Project.prototype.addRule = function(name, rule){
-	this.rules[name] = rule;
-};
-/**
- * @description 删除工程中某个Rule
- */
-Project.prototype.removeRule = function(name){
-	delete this.rules[name];
-};
-/**
- * @description 返回工程中某个Rule
- */
-Project.prototype.getRule = function(name){
-	return this.rules[name];
-};
 
-/**
- * @description 为工程中添加一个Command
- */
-Project.prototype.addCommand = function(name, command){
-	this.commands[name] = command;
-};
-/**
- * @description 删除工程中某个Command
- */
-Project.prototype.removeCommand = function(name){
-	delete this.commands[name];
-};
-/**
- * @description 返回工程中某个Command
- */
-Project.prototype.getCommand = function(name){
-	return this.commands[name];
-};
 /**
  * @description 在工程中添加一个监听器
  */
@@ -283,191 +236,71 @@ Project.prototype.removeAfterCallback = function(callback){
 /**
  * @description 在工程中添加一个任务
  */
-Project.prototype.addTask = function(name, task){
-	if(this.tasks[name] != undefined){
-		this.log("warn", "There is a task named " + name + " has beed added, the new task will overwrite it");
-	}
-	this.tasks[name] = task;
+Project.prototype.addTarget = function(name, target){
+	this.targets[name] = target;
 };
 
 /**
  * @description 移除工程中某个任务
  */
-Project.prototype.removeTask = function(name, task){
-	delete this.tasks[name];
+Project.prototype.removeTarget = function(name){
+	delete this.targets[name];
 };
 
 /**
  * @description 返回工程中某个任务
  */
-Project.prototype.getTask = function(name, task){
-	return this.tasks[name];
+Project.prototype.getTarget = function(name){
+	return this.targets[name];
 };
 
 
 /**
- * 执行某个task，默认为default
+ * 执行某个target，默认为build
  */
-Project.prototype.execute = function(taskName, callback, fail){
-	if(taskName == undefined){
-		taskName = "default";
+Project.prototype.runTarget = function(name, callback, ignoreDepends){
+	if(name == undefined){
+		name = "build";
+	}else{
+		name = name.trim();
 	}
 
-	if(!this.getTask(taskName)){
-		this.log("error", "task " + taskName + " not found in this project");
-		fail && fail();
+	
+	if(!this.getTarget(name)){
+		this.log("error", "target " + name + " not found");
+		callback(new Error("target " + name + " not found"));
 		return;
 	}
+
 	var that = this,
-		task = this.getTask(taskName),
-		rulename = task.rule,
-		rule,
-		ruleCommands = task["rule-commands"],
-		basedir = task.basedir || __dirname,
-		builddir = task.buiddir || this.tmpdir,
-		fileFilter = task["file-filter"],
-		listeners = task.listeners,
-		finished = 0;
-
-	if(!rulename){
-		this.log("error", "no rule specify in the task " + taskName);
-		fail && fail();
+		target = this.getTarget(name),
+		depends = target.depends;
+	
+	if(depends && !ignoreDepends){
+		doChainTask(depends, function(d, callback2){
+			that.runTarget(d, callback2);
+		}, function(){
+			that.runTarget(name, callback, true);
+		});
 		return;
-	}
-	rule = this.getRule(rulename);
-
-	if(!rule){
-		this.log("error", "rule " + rulename + " not found");
-		fail && fail();
-		return;
-	}
-	if(!ruleCommands || ruleCommands.length == 0){
-		this.log("error", "no command in rule " + rulename + " while running task " + taskName);
-		fail && fail();
-		return;
-	}
-	this.taskData = {
-		basedir: basedir,
-		builddir: builddir,
-		rulename: rulename,
-		taskName: taskName,
-		task: task,
-		rule: rule,
-		ruleCommands: ruleCommands,
-		listeners: listeners
 	};
+	target.run(callback);
+};
+
+Project.prototype.run = function(){
 	this.onBeforeExecute();
+	var self = this;
 	this._beforeExecute(function(){
-		var matchFiles = FileUtil.list(basedir, {
-			excludeDirectory: true,
-			matchFunction: function(item){
-				if(!fileFilter || fileFilter == "" || fileFilter == "*"){
-					return true;
-				}
-				var pattern;
-				if(util.isArray(fileFilter)){
-					pattern = new RegExp(fileFilter[0], fileFilter[1]);
-				}else{
-					pattern =  new RegExp(fileFilter, "i");
-				}
-				return pattern.test(item.fullName);
-			}
-		});
-		that.taskData.matchFiles = matchFiles;
-		if(matchFiles.length == 0){
-			that.onAfterExecute();
-		}else{
-			doChainTask(matchFiles, function(file, taskSuccess, taskFail){
-				that.executeByRule(file, taskSuccess);
-			}, function(){
-				that.onAfterExecute();
-			});
-		}
-	});
-};
-
-
-Project.prototype.executeByRule = function(item, completed){
-	var that = this,
-		taskData = this.taskData,
-		rule = taskData.rule,
-		currentRule,
-		ruleCommands = taskData.ruleCommands,
-		commands = [],
-		getCurrentRule = function(rule, ruleCommand){
-			var cr = rule[ruleCommand] || {},
-				parent = rule;
-			while(parent = that.getRule(parent["extend-rule"])){
-				parent[ruleCommand] = parent[ruleCommand] || {};
-				for(var i in parent[ruleCommand]){
-					if(cr[i] == undefined){
-						cr[i] = parent[ruleCommand][i];
-					}
-				}
-			}
-			return cr;
-		};
-	
-	taskData.fileItem = item;
-	
-
-	ruleCommands.forEach(function(ruleCommand){
-		currentRule = getCurrentRule(rule, ruleCommand);
-	
-		var deepRuleCommands = currentRule.commands,
-			matchPattern = currentRule["match-pattern"];
-		
-		if(!deepRuleCommands || deepRuleCommands.length == 0){
-			return;
-		}
-
-		if(matchPattern){
-			if(util.isArray(matchPattern)){
-				matchPattern = new RegExp(matchPattern[0], matchPattern[1]);
+		self.runTarget(this.targetName, function(err){
+			if(err){
+				self.emit('fail');
 			}else{
-				matchPattern = new RegExp(matchPattern, "i");
-			}
-			if(!matchPattern.test(item.fullName)){
-				return;
-			}
-		}
-		
-		taskData.currentRule = currentRule;
-
-		deepRuleCommands.forEach(function(commandName){
-			var command = that.getCommand(commandName),
-				commandModule;
-
-			if(command){
-				commandModule = command.module;
-				if(!commandModule){
-					try{
-						commandModule = require(__dirname + "/../" + command.file);
-						command.module = commandModule;
-					}catch(err){
-						that.log("error", "command error while requiring by file: " + command.file);
-						return;
-					}
-				}
-				commands.push(commandName);
-			}else{
-				that.log("warn", "command " + commandName + " not found");
+				self.emit('complete');
 			}
 		});
 	});
-
-	that.emit("file_start", item);
-
-	taskData.multiCommands = Boolean(commands.length > 1);
-	taskData.tmpFullName = null;
-	
-	doChainTask(commands, function(command, taskSuccess, taskFail){
-		that.executeCommand(command, taskSuccess, taskFail);
-	}, function(){
-		that.emit("file_complete", item);
-		completed && completed();
-	});
 };
+
 
 Project.prototype._beforeExecute = function(callback){
 	doChainTask(this._beforeCallbacks, function(item, success){
@@ -480,7 +313,7 @@ Project.prototype._beforeExecute = function(callback){
 Project.prototype.onBeforeExecute = function(){
 	this.emit("beforeExecute");
 	var that = this,
-		listeners = this.taskData.listeners;
+		listeners = this.listeners;
 	if(listeners && util.isArray(listeners)){
 		listeners.forEach(function(item){
 			that.activeListener(item);
@@ -499,7 +332,7 @@ Project.prototype._afterExecute = function(callback){
 Project.prototype.onAfterExecute = function(){
 	this.emit("afterExecute");
 	var that = this,
-		listeners = this.taskData.listeners;
+		listeners = this.listeners;
 
 	this._afterExecute(function(){
 		if(listeners && util.isArray(listeners)){
@@ -511,135 +344,7 @@ Project.prototype.onAfterExecute = function(){
 		that.emit("complete");
 	});
 };
-/**
- * @description execute a command for a file
- */
-Project.prototype.executeCommand = function(commandName, success, fail){
-	var that = this,
-		command = this.getCommand(commandName),
-		commandModule = command.module,
-		taskData = this.taskData,
-		task = taskData.task,
-		fileItem = taskData.fileItem,
-		options = command.options || {},
-		currentRule = taskData.currentRule || {},
-		outputRule = currentRule["output-rule"],
-		toOutputFileName = function(item){
-			var rel = path.relative(task.basedir, item.fullName);
-			var filePath = task.builddir + "/" + rel;
-			var fileDir = path.dirname(filePath);
-			var filename = path.basename(filePath);
-			var extname = path.extname(filePath);
 
-			if(outputRule){
-				filename = outputRule.replace(/#\{(\d+|\w+)\}/g, function(match, key){
-					if(key == 0){
-						if(extname != ""){
-							return filename.replace(new RegExp(extname + "$"), "");
-						}
-						return filename;
-					}else if(key == 1){
-						return extname.replace(/^\./, "");
-					}else if(key == "version"){
-						return readFileComment(fileItem.fullName, "version");
-					}else if(key == "time"){
-						return new Date().getTime();
-					}
-					return match;
-				});
-			};
-			if(!path.existsSync(fileDir)){
-				fs.mkdirSync(fileDir, 0777, true);
-			}
-			return fileDir + "/" + filename;
-		};
-	
-	
-	var eventParams = {command: commandModule, commandName: commandName, fileItem: fileItem},
-		doExecute = function(){
-			options.inputFileName = taskData.tmpFullName || fileItem.fullName;
-			if(taskData.multiCommands){
-				taskData.tmpFullName =  toOutputFileName(fileItem);
-			}else{
-				taskData.tmpFullName = null;
-			}
-			options.outputFileName = taskData.tmpFullName || toOutputFileName(fileItem);
-			that.emit("command_start", eventParams);
-			that.log("info", "command " + commandName +" start running");
-			commandModule.execute(options, function(){
-				that.emit("command_success", eventParams);
-				that.emit("command_complete", eventParams);
-				success && success();
-			}, function(){
-				that.emit("command_fail", eventParams);
-				that.emit("command_complete", eventParams);
-				success && success();
-			});
-		};
-	if(this.ignoreConfirm){
-		doExecute();
-	}else{
-		program.confirm('confirm '+ commandName + "@ " + fileItem.fullName + "? ", function(ok){
-			if(ok){
-				doExecute();
-			}else{
-				success();
-			}
-		});
-	}
-};
 
-Project.prototype.initOptions = function(options){
-	if(typeof options == "string"){
-		try{
-			options = fs.readFileSync(options, "utf-8");
-		}catch(err1){
-			console.log("Error: error occur while reading configuration file " + options);
-			return;
-		}
-		try{
-			options = JSON.parse(options);
-		}catch(err2){
-			console.log("Error: error occur while parse configuration file " + options + " using JSON");
-			return;
-		}
-	};
-	var i,
-		properties = options.properties || {},
-		rules = options.rules || {},
-		listeners = options.listeners || {},
-		commands = options.commands || {},
-		tasks = options.tasks || {};
-	
-	if(options.logLevel !== undefined){
-		this.logLevel = options.logLevel || "info";
-	}
-	if(options.verbose !== undefined){
-		this.verbose = options.verbose;
-	}
-	if(options.ignoreConfirm !== undefined){
-		this.ignoreConfirm = options.ignoreConfirm;
-	}
-	for(i in properties){
-		this.addProperty(i, this.format(properties[i]));
-	}
-	for(i in rules){
-		this.addRule(i, this.format(rules[i]));
-	}
-	for(i in listeners){
-		this.addListener(i, this.format(listeners[i]));
-	}
-	for(i in commands){
-		this.addCommand(i, this.format(commands[i]));
-	}
-	for(i in tasks){
-		this.addTask(i, this.format(tasks[i]));
-	}
-};
 
-exports.run = function(options, taskName){
-	var project = new Project(options);
-	project.execute(taskName);
-	return project;
-};
 exports.Project = Project;

@@ -32,44 +32,40 @@ var saveBinary = function(binaryUrl, path, success, fail){
 		request.on("error", fail);
 	}
 };
+
+
 /**
- * @option input {String|Optional}
- * @option inputFileName {String|Optional}
- * @option outputFileName {String|Optional}
+ * @name smushit
+ */
+exports.name = "smushit";
+
+/**
+ * @option from {String}
+ * @option to {String}
  * @option charset {String|Optional} default 'utf-8'
  */
-exports.execute = function(options, success, fail){
-	var fileContent,
-		charset = options.charset || "utf-8";
-	
+exports.execute = function(options, callback){
+	var from = options.from,
+		to = options.to,
+		fileContent;
 
-	if(options.inputFileName){
-		if(!options.outputFileName){
-			options.outputFileName = options.inputFileName;
-		}
-		
-		smushit.smushit(options.inputFileName, function(response){
-
-			try{
-				response = JSON.parse(response);
-			}catch(err){
-				fail && fail();
-				return;
-			}
-			if(response.error){
-				fail && fail();
-				return;
-			}
-			saveBinary(response.dest, options.outputFileName, function(){
-				success && success();
-			}, function(){
-				fail && fail();
-			});
-
-		}, function(error){
-			fail && fail();
-		});
-	}else{
-		fail && fail();
+	if(!from || !to){
+		return callback(new Error("The from and to options are required"));
 	}
+		
+	smushit.smushit(from, function(response){
+		try{
+			response = JSON.parse(response);
+		}catch(err){
+			return callback(err);
+		}
+		if(response.error){
+			return callback(new Error(response.error));
+		}
+		saveBinary(response.dest, to, function(){
+			callback()
+		}, function(err){
+			callback(err || new Error("error occur while save image"));
+		});
+	}, callback);
 };
