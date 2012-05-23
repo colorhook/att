@@ -12,8 +12,8 @@ exports.name = "exec";
  */
 exports.execute = function(options, callback){
 	options = options || {};
-	if(!options.line && !options.content){
+	if(!options.line && !options.value){
 		return callback(new Error("The line option is required"));
 	}
-	exec(options.line || options.content, callback);
+	exec(options.line || options.value, callback);
 };

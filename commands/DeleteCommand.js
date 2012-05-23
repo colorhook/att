@@ -2,23 +2,39 @@ var fs = require('fs'),
     path = require('path'),
 	wrench = require('wrench');
 
-
 /**
- * @name rm
+ * @name delete
  */
 exports.name = "delete";
 
 /**
  * @option target {String}
+ * @option files {Array}
  */
-exports.execute = function(options, callback){
-	
-	options = options || {};
+var execute = function(options, callback){
 
 	var target = options.target,
+		files = options.files,
+		dir = options.dir,
 		exists,
 		stat;
 
+	if(files){
+		var deleteFile = function(){
+			var file = files.shift();
+			if(!file){
+				return callback();
+			}
+			execute({target: file}, function(e){
+				if(e){
+					return callback(e);
+				}
+				deleteFile();
+			});
+		}
+		return deleteFile();
+	}
+	
 	if(!target){
 		return callback(new Error("The target options is required"));
 	}
@@ -50,3 +66,6 @@ exports.execute = function(options, callback){
 		return callback();
 	}
 };
+
+
+exports.execute = execute;

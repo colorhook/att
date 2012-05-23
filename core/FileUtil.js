@@ -1,4 +1,6 @@
 var fs = require('fs'),
+	wrench = require("wrench"),
+	path = require("path"),
 	util = require('util');
 
 /**
@@ -90,9 +92,19 @@ exports.copy = function (src, dst, callback) {
 		if (!err) {
 			return callback(new Error("File " + dst + " exists."));
 		}
+		
+		var dir = path.dirname(dst);
+		if(!path.existsSync(dir)){
+			try{
+				wrench.mkdirSyncRecursive(dir, 0777);
+			}catch(err){
+				return callback(err);
+			}
+		}
 
 		var is = fs.createReadStream(src),
 			os = fs.createWriteStream(dst);
+	
 
 		try{
 			util.pump(is, os, callback);

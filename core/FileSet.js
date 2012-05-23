@@ -1,4 +1,5 @@
 var minimatch = require("minimatch"),
+	path = require("path"),
 	FileUtil = require("./FileUtil.js");
 
 
@@ -15,33 +16,44 @@ var getFiles = function(options){
 	var files = [];
 
 	if(options.files){
-		if(!util.isArray(files)){
-			files = files.split(',');
+		if(!util.isArray(options.files)){
+			options.files = options.files.split(',');
 		}
-		return files;
+		return options.files;
 	}
 	if(!options.dir){
 		return files;
 	}
-	FileUtil.each(options.dir, function(item){
+	if(options.matchBase == undefined){
+		options.matchBase = true;
+	}
+
+	var matchItem = function(item, fullname){
 		var m;
-		if(options.excludes){
-			m = minimatch(item.fullName, options.excludes, {nocase: !options.casesensitive, matchBase: options.matchBase});
+		if(item.type == 'glob'){
+			m =  minimatch(fullname, item.value, {nocase: !options.casesensitive, matchBase: options.matchBase});
+		}else if(item.type == 'regexp'){
+			m = new RegExp(item.value, options.casesensitive ? "i" : undefined)
+			m = m.test(fullname);
+		}else if(item.type == 'file'){
+			m = path.normalize(fullname) == path.normalize(options.dir + '/' + item.value);
 		}
-		if(m){
-			return;
+		return m;
+	}
+	FileUtil.each(options.dir, function(item){
+		var m, i, l, item, fullname = item.fullName;
+		for(i = 0, l = options.includes.length; i < l; i++){
+			if(matchItem(options.includes[i], fullname)){
+				files.push(item.fullName);
+				return;
+			}
 		}
-		if(options.glob){
-			m = minimatch(item.fullName, options.glob, {nocase: !options.casesensitive, matchBase: options.matchBase});
-		}else if(options.regexp){
-			var fileName = options.matchBase ? item.name : item.fullName;
-			m = new RegExp(options.regexp, options.casesensitive ? "i" : null);
-			m = m.test(item.fullName);
+		for(i = 0, l = options.excludes.length; i < l; i++){
+			if(matchItem(options.excludes[i], fullname)){
+				return;
+			}
 		}
-		if(m){
-			files.push(item.fullName);
-		}
-		
+		files.push(item.fullName);
 	});
 	return files;
 }
@@ -49,12 +61,10 @@ var getFiles = function(options){
 
 var FileSet = function(){
 	this.dir = null;
-	this.files = null;
-	this.glob = null;
-	this.excludes = null;
-	this.regexp = null;
+	this.excludes = [];
+	this.includes = [];
 	this.casesensitive = false;
-	this.matchBase = false;
+	this.matchBase = true;
 }
 
 FileSet.prototype.getFiles = function(){

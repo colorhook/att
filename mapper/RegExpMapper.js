@@ -1,7 +1,7 @@
 /**
  * @name mapper;
  */
-exports.type = "flatten";
+exports.type = "regexp";
 /**
  * @transform
  */

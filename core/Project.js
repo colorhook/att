@@ -4,45 +4,12 @@ var fs = require("node-fs"),
 	util = require('util'),
 	events = require("events"),
 	FileUtil = require("./FileUtil.js"),
-	commandManager = require("./CommandManager.js").commandManager;
+	AttUtil = require("./AttUtil.js");
 
-
-/**
- * @description execute multi task one by one
- */
-var doChainTask = function(tasks, method, completed){
-	if(tasks.length == 0){
-		completed();
-		return;
-	}
-	var task = tasks.shift();
-	method(task, function(){
-		doChainTask(tasks, method, completed);
-	});
-};
-/**
- * @read file comment data by key
- */
-var readFileComment = function(file, key){
-	var content = fs.readFileSync(file, "utf-8"),
-		matches = content.match(/\/\*[.\s\S]+?\*\//),
-		map = {};
-
-	if(!matches || !matches[0]){
-		return null;
-	}
-	var ret;
-	matches[0].replace(/\*\s*@(\w+)\s*([.\s\S]+?)\*/, function(match, v1, v2){
-		if(!ret && v1.trim() == key){
-			ret = v2.trim();
-		}
-	});
-	return ret;
-};
 
 /**
  * @constructor
- * @description ¶¨ÒåÒ»¸ö¹¤³Ì
+ * @description å®šä¹‰ä¸€ä¸ªå·¥ç¨‹
  */
 var Project = function(){
 	events.EventEmitter.call(this);
@@ -51,111 +18,64 @@ var Project = function(){
 	this.listeners = {};
 	this.targets = {};
 	this.verbose = true;
-	this.silence = false;
 	this._beforeCallbacks = [];
 	this._afterCallbacks = [];
+	this.defaultTaskName = "build";
+	this.logLevel = "info";
 };
 
 
 util.inherits(Project, events.EventEmitter);
-/**
- * @description ¸ñÊ½»¯×Ö·û´®
- * @example
- * <pre>
- * var dict = {name : "att"};
- * console.log(Project.format("${name} is a good tool!", dict)); //att is a good tool!
- * </pre>
- */
-Project.format = function(str, dict){
-	var getValue = function(key){
-		if(util.isArray(dict)){
-			for(var i = 0, l = dict.length; i < l; i++){
-				if(getValue(dict[i]) !== undefined){
-					return getValue(dict[i]);
-				}
-			}
-			return undefined;
-		}else{
-			return dict[key];
-		}
-	}
-	str = str.replace(/\$\{([a-zA-Z0-9\-_]+)\}/g, function(match, key){
-		return getValue(key)
-	});
-	return str;
-};
+
 
 Project.prototype.log = function(type, message){
+	this.emit('log', type, message);
 	var map = {
 			"log" : 0,
 			"info" : 1,
-			"debug": 2,
-			"warn": 3,
-			"error": 4
+			"verbose" : 2,
+			"debug": 3,
+			"warn": 4,
+			"error": 5
 		},
 		v1 = map[this.logLevel],
 		v2 = map[type];
-	if(v2 >= v1){
-		console.log("[" + type + "] " + message);
+	
+
+	if(v1 >= v2){
+		console.log("========== ATT [" + type + "] " + message);
 	}
 };
 
 /**
- * ¸ù¾İ¹¤³Ì¶¨ÒåµÄ±äÁ¿¸ñÊ½»¯×Ö·û´®
+ * æ ¹æ®å·¥ç¨‹å®šä¹‰çš„å˜é‡æ ¼å¼åŒ–å­—ç¬¦ä¸²
  */
 Project.prototype.format = function(value){
-	if(typeof value !== "string"){
-		var v = JSON.stringify(value);
-		v = this.format(v, this.properties);
-		return JSON.parse(v);
-	}else{
-		return Project.format(value, this.properties);
-	}
+	return AttUtil.format(value, this.properties);
 };
 /**
- * @description Î´¹¤³ÌÖĞÌí¼ÓÒ»¸öÊôĞÔ
+ * @description æœªå·¥ç¨‹ä¸­æ·»åŠ ä¸€ä¸ªå±æ€§
  */
 Project.prototype.addProperty = function(key, value){
 	this.properties[key] = value;
 };
 /**
- * @description É¾³ı¹¤³ÌÖĞ¶¨ÒåµÄÄ³¸öÊôĞÔ
+ * @description åˆ é™¤å·¥ç¨‹ä¸­å®šä¹‰çš„æŸä¸ªå±æ€§
  */
 Project.prototype.removeProperty = function(key){
 	delete this.properties[key];
 };
 /**
- * @description È¡µÃ¹¤³Ì¶¨ÒåµÄÄ³¸öÊôĞÔ
+ * @description å–å¾—å·¥ç¨‹å®šä¹‰çš„æŸä¸ªå±æ€§
  */
 Project.prototype.getProperty = function(key){
 	var value = this.properties[key];
 	return this.format(value);
 };
 
+
 /**
- * @description ÔÚ¹¤³ÌÖĞÌí¼ÓÒ»¸ö¼àÌıÆ÷
- */
-Project.prototype.addListener = function(name, listener){
-	if(this.listeners[name] != undefined){
-		this.log("warn", "There has a listener named " + name + " has beed added");
-		return;
-	}
-	this.listeners[name] = listener;
-};
-/**
- * @description ÒÆ³ı¹¤³ÌÖĞÄ³¸ö¼àÌıÆ÷
- */
-Project.prototype.removeListener = function(name){
-	delete this.listeners[name];
-};
-/**
- * @description ·µ»Ø¹¤³ÌÖĞÄ³¸ö¼àÌıÆ÷µÄÃèÊö
- */
-Project.prototype.getListener = function(name){
-	return this.listeners[name];
-};
-/**
- * @description ¼¤»î¼àÌıÆ÷
+ * @description æ¿€æ´»ç›‘å¬å™¨
  */
 Project.prototype.activeListener = function(name){
 	var listener = this.listeners[name],
@@ -180,7 +100,7 @@ Project.prototype.activeListener = function(name){
 	listenerModule.onActive(this, listener.options);
 };
 /**
- * @description È¡Ïû¼àÌıÆ÷
+ * @description å–æ¶ˆç›‘å¬å™¨
  */
 Project.prototype.deactiveListener = function(name){
 
@@ -234,21 +154,21 @@ Project.prototype.removeAfterCallback = function(callback){
 	}
 };
 /**
- * @description ÔÚ¹¤³ÌÖĞÌí¼ÓÒ»¸öÈÎÎñ
+ * @description åœ¨å·¥ç¨‹ä¸­æ·»åŠ ä¸€ä¸ªä»»åŠ¡
  */
 Project.prototype.addTarget = function(name, target){
 	this.targets[name] = target;
 };
 
 /**
- * @description ÒÆ³ı¹¤³ÌÖĞÄ³¸öÈÎÎñ
+ * @description ç§»é™¤å·¥ç¨‹ä¸­æŸä¸ªä»»åŠ¡
  */
 Project.prototype.removeTarget = function(name){
 	delete this.targets[name];
 };
 
 /**
- * @description ·µ»Ø¹¤³ÌÖĞÄ³¸öÈÎÎñ
+ * @description è¿”å›å·¥ç¨‹ä¸­æŸä¸ªä»»åŠ¡
  */
 Project.prototype.getTarget = function(name){
 	return this.targets[name];
@@ -256,16 +176,15 @@ Project.prototype.getTarget = function(name){
 
 
 /**
- * Ö´ĞĞÄ³¸ötarget£¬Ä¬ÈÏÎªbuild
+ * æ‰§è¡ŒæŸä¸ªtargetï¼Œé»˜è®¤ä¸ºbuild
  */
 Project.prototype.runTarget = function(name, callback, ignoreDepends){
+
 	if(name == undefined){
-		name = "build";
+		name = this.defaultTaskName;
 	}else{
 		name = name.trim();
 	}
-
-	
 	if(!this.getTarget(name)){
 		this.log("error", "target " + name + " not found");
 		callback(new Error("target " + name + " not found"));
@@ -275,35 +194,44 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 	var that = this,
 		target = this.getTarget(name),
 		depends = target.depends;
-	
 	if(depends && !ignoreDepends){
-		doChainTask(depends, function(d, callback2){
-			that.runTarget(d, callback2);
+		AttUtil.doSequenceTasks(depends, function(d, callback2){
+			if(!d || d== ""){
+				callback2();
+			}else{
+				that.runTarget(d, callback2);
+			}
 		}, function(){
 			that.runTarget(name, callback, true);
 		});
 		return;
 	};
-	target.run(callback);
+	this.emit('targetStart', target);
+	that.log('verbose', 'target [' + name +'] start runnig');
+	target.run(function(err){
+		err &&	that.log('error', 'target [' + name +'] error occur' + err.toString());
+		that.log('verbose', 'target [' + name +'] finished');
+		that.emit('targetFinish', target, err);
+		callback(err);
+	});
+	
 };
 
 Project.prototype.run = function(){
-	this.onBeforeExecute();
 	var self = this;
+	Project.currentProject = this;
+	this.log("verbose", "project [" + (this.name || "<missing project name>") + "] start running");
+	this.onBeforeExecute();
 	this._beforeExecute(function(){
 		self.runTarget(this.targetName, function(err){
-			if(err){
-				self.emit('fail');
-			}else{
-				self.emit('complete');
-			}
+			self.onAfterExecute(err);
 		});
 	});
 };
 
 
 Project.prototype._beforeExecute = function(callback){
-	doChainTask(this._beforeCallbacks, function(item, success){
+	AttUtil.doSequenceTasks(this._beforeCallbacks, function(item, success){
 		item(success);
 	}, callback);
 };
@@ -311,7 +239,7 @@ Project.prototype._beforeExecute = function(callback){
  * @description defore the project start to execute, active all the relatived listeners.
  */
 Project.prototype.onBeforeExecute = function(){
-	this.emit("beforeExecute");
+	this.emit("beforeStart");
 	var that = this,
 		listeners = this.listeners;
 	if(listeners && util.isArray(listeners)){
@@ -319,18 +247,18 @@ Project.prototype.onBeforeExecute = function(){
 			that.activeListener(item);
 		});
 	}
-	this.emit("execute");
+	this.emit("start");
 };
 Project.prototype._afterExecute = function(callback){
-	doChainTask(this._afterCallbacks, function(item, success){
+	AttUtil.doSequenceTasks(this._afterCallbacks, function(item, success){
 		item(success);
 	}, callback);
 };
 /**
  * @description after the project executed, deactive all the relatived listeners.
  */
-Project.prototype.onAfterExecute = function(){
-	this.emit("afterExecute");
+Project.prototype.onAfterExecute = function(err){
+	this.emit("afterStart");
 	var that = this,
 		listeners = this.listeners;
 
@@ -341,7 +269,9 @@ Project.prototype.onAfterExecute = function(){
 			});
 		}
 		process.stdin.destroy();
-		that.emit("complete");
+		that.emit("finish", err);
+		that.log("verbose", "project [" + (that.name || "<missing project name>") + "] finished");
+		Project.currentProject = null;
 	});
 };
 

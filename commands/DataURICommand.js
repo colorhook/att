@@ -1,7 +1,6 @@
 var fs = require('fs'),
 	path = require('path');
 
-
 var transform = exports.transform = function(input, basePath, ieCompat, maxSize){
 	if(maxSize == undefined){
 		maxSize = 0;
@@ -26,7 +25,6 @@ var transform = exports.transform = function(input, basePath, ieCompat, maxSize)
 	});
 	return input;
 };
-
 /**
  * @name datauri
  */

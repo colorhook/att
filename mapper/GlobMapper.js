@@ -2,7 +2,7 @@ var minimatch = require("minimatch");
 /**
  * @name mapper;
  */
-exports.type = "flatten";
+exports.type = "glob";
 /**
  * @transform
  */
