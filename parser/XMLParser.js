@@ -48,7 +48,7 @@ parse = function(data){
 	//初始化属性
 	project.name = getAttr(xml, 'name');
 	project.description = getAttr(xml, 'description');
-	project.defaultTaskName = getAttr(xml, 'default');
+	project.defaultTargetName = getAttr(xml, 'default') || "build";
 	project.basedir = getAttr(xml, 'basedir') || process.cwd();
 	logLevel  = getAttr(xml, 'logLevel');
 	if(logLevel){

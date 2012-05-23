@@ -20,8 +20,9 @@ var Project = function(){
 	this.verbose = true;
 	this._beforeCallbacks = [];
 	this._afterCallbacks = [];
-	this.defaultTaskName = "build";
+	this.defaultTargetName = "build";
 	this.logLevel = "info";
+	this.targetName = null;
 };
 
 
@@ -97,7 +98,7 @@ Project.prototype.activeListener = function(name){
 			return;
 		}
 	}
-	listenerModule.onActive(this, listener.options);
+	listenerModule.initialize(this, listener.options);
 };
 /**
  * @description 取消监听器
@@ -121,7 +122,7 @@ Project.prototype.deactiveListener = function(name){
 			return;
 		}
 	}
-	listenerModule.onDeactive(this, listener.options);
+	listenerModule.dispose(this, listener.options);
 };
 /**
  * add before callback for project to run
@@ -181,7 +182,7 @@ Project.prototype.getTarget = function(name){
 Project.prototype.runTarget = function(name, callback, ignoreDepends){
 
 	if(name == undefined){
-		name = this.defaultTaskName;
+		name = this.defaultTargetName;
 	}else{
 		name = name.trim();
 	}
@@ -217,13 +218,14 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 	
 };
 
-Project.prototype.run = function(){
+Project.prototype.run = function(targetName){
 	var self = this;
+	this.targetName = targetName || this.defaultTargetName;
 	Project.currentProject = this;
 	this.log("verbose", "project [" + (this.name || "<missing project name>") + "] start running");
 	this.onBeforeExecute();
 	this._beforeExecute(function(){
-		self.runTarget(this.targetName, function(err){
+		self.runTarget(self.targetName, function(err){
 			self.onAfterExecute(err);
 		});
 	});

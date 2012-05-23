@@ -14,11 +14,9 @@ exports.description = "list or remove the temp files";
 /**
  * plugin action
  */
-exports.action = function(query, options){
-	var command;
-	if(options){
-		command = options.parent.args[0];
-	};
+exports.action = function(){
+	var command = process.argv[3];
+
 	if(command == 'delete'){
 		wrench.rmdirSyncRecursive(__dirname + "/../tmp/", true);
 		wrench.mkdirSyncRecursive(__dirname + "/../tmp/", 0777);

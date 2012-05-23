@@ -1,0 +1,48 @@
+{
+    "name": "att",
+    "version": "0.1.0",
+	"description": "an Auto Task Tool for Web Developer",
+    "keywords": ["att", "web build", "minify", "web performance"],
+    "main": "att.js",
+    "engines": {
+        "node" : ">=0.6.3"
+    },
+	"author": "colorhook <colorhook@gmail.com>",
+	"maintainers": [{
+      "name": "colorhook",
+      "email": "colorhook@gmail.com",
+      "url": "http://colorhook.com"
+    }],
+	"bugs": {
+        "email": "colorhook@gmail.com",
+        "url": "http://github.com/colorhook/att/issues"
+    },
+    "dependencies": {
+		"node-jsxml": "~0.2.0",
+		"node-properties-parser": "~0.0.2",
+		"node-fs": "~0.1.3",
+		"wrench": "~1.3.8",
+		"minimatch": "~0.2",
+		"glob": "~3.1.9",
+		"optimist": "~0.3.4",
+		"commander": "~0.6.0",
+		"uglify-js": "~1.2.6",
+		"clean-css": "~0.3.2",
+		"less": "~1.3.0",
+		"html-minifier": "~0.4.5",
+		"node-smushit": "~0.1.0",
+		"mailer": "~0.6.7",
+		"ftp": "~0.1.2"
+    },
+    "homepage": "https://github.com/colorhook/att",
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/colorhook/att.git"
+    },
+	"licenses": [
+        {
+            "type": "MIT",
+            "url": "http://github.com/colorhook/att/blob/master/LICENSE"
+        }
+    ]
+}

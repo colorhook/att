@@ -39,4 +39,6 @@ var initializePlugins = function(arr){
 initializePlugins("./plugins/");
 initializePlugins(configuration.plugins);
 
-program.parse(process.argv);
+var argv = process.argv.slice();
+argv.length = 3;
+program.parse(argv);
