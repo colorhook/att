@@ -22,12 +22,10 @@ exports.execute = function(options, callback){
 
 	var uploadFile = function(file, callback){
 			var filename = path.basename(file);
-			client.put(fs.createReadStream(file), filename, function(e) {
-			     callback(e);
-			});
+			client.put(fs.createReadStream(file), filename, callback);
 		},
 		uploadFiles = function(){
-			if(files.length == 0){
+			if(files.length === 0){
 				client.end();
 				return callback();
 			}
@@ -51,12 +49,12 @@ exports.execute = function(options, callback){
 
 	client = new FTPClient({host: host, port: port});
 	client.on('connect', function(){
-		 client.auth(options.username, options.password, function(e) {
+		client.auth(options.username, options.password, function(e) {
 			if(e){
 				callback(e);
 				return client.end();
 			}
-			if(options.remotedir != ""){
+			if(options.remotedir !== ""){
 				client.cwd(options.remotedir, function(e){
 					if(e){
 						callback(e);
@@ -67,10 +65,10 @@ exports.execute = function(options, callback){
 			}else{
 				uploadFiles();
 			}
-		 });
+		});
 	});
 	client.on('timeout', function(e){
-		callback(new Error("FTP timeout"))
+		callback(new Error("FTP timeout"));
 	});
 	client.connect();
 };

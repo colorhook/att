@@ -22,14 +22,14 @@ exports.execute = function(options, callback){
 	}
 
 	if(type == "password"){
-		method = "password"
+		method = "password";
 	}
 
 	commander[method](label + " ", function(v){
-		if(!v || v == ""){
+		if(!v || v === ""){
 			v = dv;
 		}
-		if(type && type.toLowerCase() == 'boolean'){
+		if(type && type.toLowerCase() === 'boolean'){
 			v = Boolean(v);
 		}
 		Project.currentProject.addProperty(name, v);

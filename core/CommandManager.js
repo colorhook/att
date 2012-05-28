@@ -15,7 +15,7 @@ exports.getCommand = function(name){
 };
 
 exports.hasCommand = function(name){
-	return commandMap[name] != null;
+	return commandMap[name] !== null;
 };
 
 exports.executeCommand = function(name, options, callback){

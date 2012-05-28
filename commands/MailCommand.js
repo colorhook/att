@@ -28,10 +28,10 @@ exports.execute = function(options, callback){
       authentication : options.authentication,    // auth login is supported; anything else is no auth
       username : options.username,        // username
       password : options.password         // password
-    }
+    };
 	var base64 = function(s){
 		return (new Buffer(s)).toString("base64");
-	}
+	};
 	if(options.port){
 		mailOptions.port = options.port;
 	}

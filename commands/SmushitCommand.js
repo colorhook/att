@@ -6,17 +6,17 @@ var fs = require("fs"),
 var saveBinary = function(binaryUrl, path, success, fail){
 	var urlObj = url.parse(binaryUrl),
 		options = {
-			host: urlObj.host
-		  , port: urlObj.port
-		  , path: urlObj.pathname
-		}
+			host: urlObj.host,
+			port: urlObj.port,
+			path: urlObj.pathname
+		};
 
 	var request = http.get(options, function(res){
 		var data = '';
-		res.setEncoding('binary')
+		res.setEncoding('binary');
 		res.on('data', function(chunk){
 			data += chunk;
-		})
+		});
 		res.on('end', function(){
 			fs.writeFile(path, data, 'binary', function(err){
 				if (err){
@@ -24,8 +24,8 @@ var saveBinary = function(binaryUrl, path, success, fail){
 				}else{
 					success && success();
 				}
-			})
-		})
+			});
+		});
 	});
 
 	if(fail){
@@ -63,7 +63,7 @@ exports.execute = function(options, callback){
 			return callback(new Error(response.error));
 		}
 		saveBinary(response.dest, to, function(){
-			callback()
+			callback();
 		}, function(err){
 			callback(err || new Error("error occur while save image"));
 		});

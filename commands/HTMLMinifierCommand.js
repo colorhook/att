@@ -33,14 +33,13 @@ exports.execute = function(options, callback){
 			removeOptionalTags:             false,
 			removeScriptTypeAttributes:     true,
 			removeStyleLinkTypeAttributes:  true
-		}
+		};
 	
 	for(var i in defaults){
-		if(options[i] != undefined){
+		if(options[i] !== undefined){
 			defaults[i] = Boolean(options[i]);
 		}
 	}
-
 	if(!from || !to){
 		return callback(new Error("The from and to options are required"));
 	}

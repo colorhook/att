@@ -110,7 +110,7 @@ Project.prototype.deactiveListener = function(name){
 		listenerFile;
 	
 	if(!listener){
-		return
+		return;
 	}
 	listenerModule = listener.module;
 	listenerFile = listener.file;
@@ -181,7 +181,7 @@ Project.prototype.getTarget = function(name){
  */
 Project.prototype.runTarget = function(name, callback, ignoreDepends){
 
-	if(name == undefined){
+	if(name === undefined){
 		name = this.defaultTargetName;
 	}else{
 		name = name.trim();
@@ -197,7 +197,7 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 		depends = target.depends;
 	if(depends && !ignoreDepends){
 		AttUtil.doSequenceTasks(depends, function(d, callback2){
-			if(!d || d== ""){
+			if(!d || d=== ""){
 				callback2();
 			}else{
 				that.runTarget(d, callback2);
@@ -206,11 +206,11 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 			that.runTarget(name, callback, true);
 		});
 		return;
-	};
+	}
 	this.emit('targetStart', target);
 	that.log('verbose', 'target [' + name +'] start runnig');
 	target.run(function(err){
-		err &&	that.log('error', 'target [' + name +'] error occur' + err.toString());
+		//err &&	that.log('error', 'target [' + name +'] error occur' + err.toString());
 		that.log('verbose', 'target [' + name +'] finished');
 		that.emit('targetFinish', target, err);
 		callback(err);

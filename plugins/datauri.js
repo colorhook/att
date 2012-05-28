@@ -3,21 +3,21 @@ var path = require("path"),
 	argv = require('optimist').argv,
 	wrench = require("wrench"),
 	program = require("commander"),
-	AttUtil = require("../core/AttUtil.js"),
-	MinifyCommand = require("../commands/MinifyCommand.js");
+	DataURICommand = require("../commands/DataURICommand.js");
 
 
 var mapper,
-	interceptor;
+	interceptor,
+	ieCompat = true;
 /**
  * plugin name
  */
-exports.name = "minify";
+exports.name = "datauri";
 
 /**
  * plugin description
  */
-exports.description = "minify js, css, image and html";
+exports.description = "datauri";
 
 /**
  * plugin action
@@ -30,7 +30,6 @@ var toPath = function(file){
 	if(mapper && mapper.transform){
 		p = mapper.transform(file, p);
 	}
-
 	if(!path.existsSync(dirname)){
 		try{
 			wrench.mkdirSyncRecursive(dirname, 0777);
@@ -39,17 +38,18 @@ var toPath = function(file){
 	return p;
 };
 
-var minifyFile = function(file, callback){
+var datauriFile = function(file, callback){
 	var toName = toPath(file);
-	MinifyCommand.execute({
+	DataURICommand.execute({
 		from: file,
-		to: toName
+		to: toName,
+		ieCompat: ieCompat
 	}, function(err){
 		if(err){
 			console.log("Error occur while handling file: " + file);
 			console.log(err);
 		}else{
-			console.log("Minify success at file: " + file);
+			console.log("DataURI success at file: " + file);
 		}
 		callback && callback(err);
 		if(interceptor){
@@ -66,24 +66,32 @@ exports.initialize = function(options){
 	if(options.mapper){
 		mapper = require(__dirname + "/../" + options.mapper);
 	}
+	if(options.ieCompat !== undefined){
+		ieCompat = options.ieCompat;
+	}
 };
 
 exports.action = function(){
 	var query = process.argv[3],
 		silent = argv.s || argv.silent;
+	
+	if(argv.n !== undefined || argv.nocompat !== undefined){
+		ieCompat = false;
+	}
+		
 	if(!query){
 		return console.log("the file glob is required");
 	}
 	glob(query, function(err, files){
 		if(silent){
 			files.forEach(function(file){
-				minifyFile(file);
+				datauriFile(file);
 			});
 		}else{
 			AttUtil.doSequenceTasks(files, function(file, callback){
-				program.confirm("minify the file -> " + file + " ? ", function(yes){
+				program.confirm("datauri the file -> " + file + " ? ", function(yes){
 					if(yes){
-						minifyFile(file, callback);
+						datauriFile(file, callback);
 					}else{
 						callback();
 					}

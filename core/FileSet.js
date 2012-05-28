@@ -24,7 +24,7 @@ var getFiles = function(options){
 	if(!options.dir){
 		return files;
 	}
-	if(options.matchBase == undefined){
+	if(options.matchBase === undefined){
 		options.matchBase = true;
 	}
 
@@ -33,15 +33,15 @@ var getFiles = function(options){
 		if(item.type == 'glob'){
 			m =  minimatch(fullname, item.value, {nocase: !options.casesensitive, matchBase: options.matchBase});
 		}else if(item.type == 'regexp'){
-			m = new RegExp(item.value, options.casesensitive ? "i" : undefined)
+			m = new RegExp(item.value, options.casesensitive ? "i" : undefined);
 			m = m.test(fullname);
 		}else if(item.type == 'file'){
 			m = path.normalize(fullname) == path.normalize(options.dir + '/' + item.value);
 		}
 		return m;
-	}
+	};
 	FileUtil.each(options.dir, function(item){
-		var m, i, l, item, fullname = item.fullName;
+		var m, i, l, fullname = item.fullName;
 		for(i = 0, l = options.includes.length; i < l; i++){
 			if(matchItem(options.includes[i], fullname)){
 				files.push(item.fullName);
@@ -56,7 +56,7 @@ var getFiles = function(options){
 		files.push(item.fullName);
 	});
 	return files;
-}
+};
 
 
 var FileSet = function(){
@@ -65,11 +65,11 @@ var FileSet = function(){
 	this.includes = [];
 	this.casesensitive = false;
 	this.matchBase = true;
-}
+};
 
 FileSet.prototype.getFiles = function(){
 	return getFiles(this);
-}
+};
 
 exports.getFiles = getFiles;
 exports.FileSet = FileSet;

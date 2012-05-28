@@ -6,7 +6,6 @@ var fs = require('fs'),
  * @name copy
  */
 exports.name = "copy";
-
 /**
  * @option from
  * @option to
@@ -22,7 +21,7 @@ exports.execute = function(options, callback){
 	
 	if(!to){
 		return callback(new Error("The to option is required"));
-	};
+	}
 	if(files){
 		var copyFile = function(){
 
@@ -41,7 +40,7 @@ exports.execute = function(options, callback){
 			
 			if(file){
 				toPath = path.resolve(to + "/" + path.relative(dir, file));
-				var toDir = path.dirname(toPath);
+				toDir = path.dirname(toPath);
 				if(!path.existsSync(toDir)){
 					try{
 						wrench.mkdirSyncRecursive(toDir, 0777);

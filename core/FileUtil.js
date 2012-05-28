@@ -4,7 +4,7 @@ var fs = require('fs'),
 	util = require('util');
 
 /**
- * ╠ИюЗдЁ╦Жнд╪Ч╪поб╣дкЫспнд╪Ч╨мнд╪Ч╪п
+ * И│█Е▌├Ф÷░Д╦╙Ф√┤Д╩╤Е╓╧Д╦▀Г └Ф┴─Ф°┴Ф√┤Д╩╤Е▓▄Ф√┤Д╩╤Е╓╧
  */
 exports.each = function(dir, callback, options){
 	options = options || {};
@@ -74,7 +74,7 @@ exports.each = function(dir, callback, options){
 };
 
 /**
- * апЁЖдЁ╦Жнд╪Ч╪поб╣дкЫспнд╪Ч╨мнд╪Ч╪п
+ * Е┬≈Е┤╨Ф÷░Д╦╙Ф√┤Д╩╤Е╓╧Д╦▀Г └Ф┴─Ф°┴Ф√┤Д╩╤Е▓▄Ф√┤Д╩╤Е╓╧
  */
 exports.list = function(dir, options){
 	var result = [];

@@ -1,5 +1,5 @@
 var path = require("path"),
-	argv = require('optimist').argv
+	argv = require('optimist').argv,
 	parser = require("../parser/XMLParser.js");
 
 /**
@@ -36,4 +36,4 @@ exports.action = function(query, options){
 	}
 	var project = parser.parseFile(file);
 	project.run(task);
-}
+};

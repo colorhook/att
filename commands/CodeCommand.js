@@ -5,8 +5,8 @@ var vm = require("vm"),
  * @name code
  */
 exports.name = "code";
-
 /**
+ * @value code
  */
 exports.execute = function(options, callback){
 	var code = options.value,

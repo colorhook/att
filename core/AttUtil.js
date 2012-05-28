@@ -5,7 +5,7 @@ var fs = require("fs"),
  * 顺序执行一些异步任务
  */
 exports.doSequenceTasks = function(tasks, method, completed){
-	if(tasks.length == 0){
+	if(tasks.length === 0){
 		return completed();
 	}
 	method(tasks.shift(), function(){
@@ -17,12 +17,12 @@ exports.doSequenceTasks = function(tasks, method, completed){
  */
 exports.doParallelTasks = function(tasks, method, completed){
 	var total = tasks.length;
-	if(total == 0){
+	if(total === 0){
 		return completed();
 	}
 	tasks.forEach(function(item){
 		method(item, function(){
-			if(--total == 0){
+			if(--total === 0){
 				completed();
 			}
 		});
@@ -39,7 +39,7 @@ exports.readComment = function(key, content){
 	if(!matches || !matches[0]){
 		return null;
 	}
-	matches[0].replace(/\*\s*@(\w+)\s*([.\s\S]+?)\*/, function(match, v1, v2){
+	matches[0].replace(/\*\s*@(\w+)\s*([^@\*]+?)/g, function(match, v1, v2){
 		if(!ret && v1.trim() == key){
 			ret = v2.trim();
 		}
@@ -50,8 +50,8 @@ exports.readComment = function(key, content){
  * 读取文件注释信息
  */
 exports.readCommentInFile = function(key, file, charset){
-	var charset = charset || "utf-8";
-	return exports.readFileComment(key, fs.readFileSync(file, charset));
+	charset = charset || "utf-8";
+	return exports.readComment(key, fs.readFileSync(file, charset));
 };
 /**
  * 根据dict参数格式化带有${key}这种形式的字符串
@@ -75,7 +75,7 @@ exports.format = function(str, dict){
 		}else{
 			return dict[key];
 		}
-	}
+	};
 	str = str.replace(/\$\{([a-zA-Z0-9\-\._]+)\}/g, function(match, key){
 		return getValue(key);
 	});
@@ -86,21 +86,21 @@ exports.format = function(str, dict){
  */
 exports.storage = function(key, value){
 	var data,
-		configFile = '../att.json',
+		configFile = __dirname + '/../att.json',
 		charset = 'utf-8',
 		save = function(o){
 			try{
 				fs.saveFileSync(JSON.stringify(o), configFile, charset);
 			}catch(err){}
 		};
-
+	
 	try{
 		data = fs.readFileSync(configFile, charset);
 		data = JSON.parse(data);
 	}catch(err){
 		data = {};
 	}
-	if(key == undefined){
+	if(key === undefined){
 		return data;
 	}
 	if(value === undefined){
@@ -111,7 +111,7 @@ exports.storage = function(key, value){
 		data[key] = value;
 	}
 	save(data);
-}
+};
 /**
  * 转换成布尔值
  */
@@ -124,4 +124,4 @@ exports.toBoolean = function(v){
 		return true;
 	}
 	return false;
-}
+};

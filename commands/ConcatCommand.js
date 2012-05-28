@@ -7,7 +7,6 @@ var fs = require("fs"),
  * @name concat
  */
 exports.name = "concat";
-
 /**
  * @option from
  * @option to

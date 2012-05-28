@@ -29,16 +29,14 @@ exports.execute = function(options, callback){
 	}
 	if(!files){
 		return callback(new Error("The fileset option must be specified"));
-	};
-	
+	}
 
 	files.forEach(function(item){
 		var stat = fs.statSync(item);
 		if(stat.isFile()){
-			zipFiles.push({name: path.relative(options.dir, item ), path: item})
+			zipFiles.push({name: path.relative(options.dir, item ), path: item});
 		}
 	});
-
 	var archive = new zip();
 	archive.addFiles(zipFiles, function (err) {
 		if (err){

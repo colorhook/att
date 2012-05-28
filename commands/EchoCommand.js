@@ -2,7 +2,6 @@
  * @name echo
  */
 exports.name = "echo";
-
 /**
  * @option content {String}
  */

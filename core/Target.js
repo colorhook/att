@@ -4,11 +4,11 @@ var commandManager = require("./CommandManager.js"),
 
 var Target = function(){
 	this._commands = [];
-}
+};
 
 Target.prototype.addCommand = function(commandName, options){
 	this._commands.push({commandName: commandName, options: options});
-}
+};
 
 Target.prototype.run = function(callback, itemCallback){
 	var self = this;

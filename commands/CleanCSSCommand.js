@@ -3,7 +3,7 @@ var fs = require('fs'),
 
 var transform = exports.transform = function(input){
 	return cleanCSS.process(input);
-}
+};
 /**
  * @name cleancss
  */

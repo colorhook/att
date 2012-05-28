@@ -34,7 +34,7 @@ exports.execute = function(options, callback){
 			}else{
 				callback();
 			}
-		}
+		};
 		moveFile();
 	}else{
 		if(!from){

@@ -1,10 +1,5 @@
-test
-listeners
-mapper
-att2.json
 tmp
-market-build
 example
+example/*
 cli.js
-core/Project*.js
 att.bat

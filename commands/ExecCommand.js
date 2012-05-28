@@ -6,7 +6,6 @@ var fs = require("fs"),
  * @name exec
  */
 exports.name = "exec";
-
 /**
  * @option line
  */

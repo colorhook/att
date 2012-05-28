@@ -40,7 +40,7 @@ parse = function(data){
 			for(var i in data){
 				project.addProperty(i, data[i]);
 			}
-		}else if(key != ""){
+		}else if(key !== ""){
 			project.addProperty(key, value);
 		}
 	});
@@ -69,7 +69,7 @@ parse = function(data){
 	xml.child('listener').each(function(item){
 		var key = getAttr(item, 'name'),
 			value = getAttr(item, 'value') || format(item.text().toString());
-		if(key != ""){
+		if(key !== ""){
 			project.addListener(key, value);
 		}
 	});
@@ -80,14 +80,14 @@ parse = function(data){
 			desc = getAttr(item, 'description'),
 			depends = getAttr(item, 'depends');
 		
-		if(name == ""){
+		if(name === ""){
 			throw new Error("The target must have a name");
 		}
 
 		var target = new Target();
 		target.name = name;
 		target.description = desc;
-		if(depends != ""){
+		if(depends !== ""){
 			target.depends = depends.split(",");
 		}
 
@@ -110,7 +110,7 @@ parse = function(data){
 				var mapper = child.child("mapper").attribute("type").toString(),
 					filesetNode = child.child("fileset");
 
-				if(mapper != ""){
+				if(mapper !== ""){
 					options.mapper = format(mapper);
 				}
 				if(filesetNode.length()){
@@ -120,7 +120,7 @@ parse = function(data){
 						options.fileset = set;
 					}
 				}else{
-					if(options.from && options.from != ""){
+					if(options.from && options.from !== ""){
 						var arr = options.from.split(",");
 						options.files = arr;
 					}else{
@@ -150,31 +150,29 @@ parseFileSet = function(filesetNode){
 	
 	var addIncludeOrExclude = function(item, include){
 		var host = include ? set.includes : set.excludes;
-		if(item.glob && item.glob != ""){
+		if(item.glob && item.glob !== ""){
 			host.push({type: 'glob', value: item.glob});
 		}
-		if(item.regexp && item.regexp != ""){
+		if(item.regexp && item.regexp !== ""){
 			host.push({type: 'regexp', value: item.regexp});
 		}
-		if(item.file && item.file != ""){
+		if(item.file && item.file !== ""){
 			host.push({type: 'file', value: item.file});
 		}
-	}
+	};
 	filesetNode.child("include").each(function(item){
-		var item = {
+		addIncludeOrExclude({
 			glob: item.attribute('glob').toString(),
 			regexp: item.attribute('regexp').toString(),
-			file: item.attribute('file').toString(),
-		};
-		addIncludeOrExclude(item, true);
+			file: item.attribute('file').toString()
+		}, true);
 	});
 	filesetNode.child("exclude").each(function(item){
-		var item = {
+		addIncludeOrExclude({
 			glob: item.attribute('glob').toString(),
 			regexp: item.attribute('regexp').toString(),
-			file: item.attribute('file').toString(),
-		};
-		addIncludeOrExclude(item);
+			file: item.attribute('file').toString()
+		});
 	});
 	return set;
 },

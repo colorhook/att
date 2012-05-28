@@ -2,7 +2,7 @@ var fs = require('fs'),
 	path = require('path');
 
 var transform = exports.transform = function(input, basePath, ieCompat, maxSize){
-	if(maxSize == undefined){
+	if(maxSize === undefined){
 		maxSize = 0;
 	}
 	input = input.replace(/background.*url\(\s*\"?\'?(\S*)\.(png|jpg|jpeg|gif|svg\+xml)\"?\'?\s*\).+/gi, function(match, file, type){

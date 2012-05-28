@@ -31,7 +31,7 @@ var execute = function(options, callback){
 				}
 				deleteFile();
 			});
-		}
+		};
 		return deleteFile();
 	}
 	
@@ -39,7 +39,7 @@ var execute = function(options, callback){
 		return callback(new Error("The target options is required"));
 	}
 
-	var exists = path.existsSync(target);
+	exists = path.existsSync(target);
 
 	if(!exists){
 		return callback();

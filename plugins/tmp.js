@@ -1,4 +1,5 @@
-﻿var glob = require("glob"),
+var glob = require("glob"),
+	path = require("path"),
 	wrench = require("wrench");
 
 /**
@@ -9,7 +10,7 @@ exports.name = "tmp";
 /**
  * plugin description
  */
-exports.description = "list or remove the temp files";
+exports.description = "list or clear the temp files";
 
 /**
  * plugin action
@@ -17,14 +18,15 @@ exports.description = "list or remove the temp files";
 exports.action = function(){
 	var command = process.argv[3];
 
-	if(command == 'delete'){
-		wrench.rmdirSyncRecursive(__dirname + "/../tmp/", true);
-		wrench.mkdirSyncRecursive(__dirname + "/../tmp/", 0777);
+	if(command == 'clear'){
+		var target = path.resolve(__dirname + "/../tmp/");
+		wrench.rmdirSyncRecursive(target, true);
+		wrench.mkdirSyncRecursive(target, 0777);
 		return;
 	}
 	glob(__dirname + "/../tmp/**/*", function(err, files){
 		files.forEach(function(item){
-			console.log("  -> " + item);
+			console.log("  -> " + path.resolve(item));
 		});
 	});
-}
+};
