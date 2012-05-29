@@ -1,5 +1,6 @@
 var fs = require('fs'),
     path = require('path'),
+	Project = require('../core/Project.js').Project,
 	wrench = require('wrench');
 
 /**
@@ -37,6 +38,10 @@ var execute = function(options, callback){
 	
 	if(!target){
 		return callback(new Error("The target options is required"));
+	}
+	
+	if(Project.currentProject){
+		target = path.resolve(Project.currentProject.basedir, target);
 	}
 
 	exists = path.existsSync(target);

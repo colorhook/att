@@ -1,7 +1,6 @@
 var jshint = require("jshint/lib/hint.js"),
 	glob = require("glob");
 
-
 /**
  * plugin name
  */
@@ -15,11 +14,6 @@ exports.description = "jshint";
 /**
  * plugin action
  */
-
-
-exports.initialize = function(options){
-};
-
 exports.action = function(){
 	var query = process.argv[3];
 
@@ -27,6 +21,8 @@ exports.action = function(){
 		return console.log("the file glob is required");
 	}
 	glob(query, function(err, files){
-		jshint.hint(files);
+		if(jshint.hint(files).length === 0){
+			console.log("Perfect!");
+		}
 	});
 };

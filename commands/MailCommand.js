@@ -12,8 +12,7 @@ exports.name = "mail";
  */
 exports.execute = function(options, callback){
 
-	
-	if(!options.host || !options.to || !options.subject){
+	if(!options.host || !options.$to || !options.subject){
 		return callback(new Error("The host, to and subject options are required"));
 	}
 
@@ -21,18 +20,19 @@ exports.execute = function(options, callback){
       host : options.host,              // smtp server hostname
       ssl: Boolean(options.ssl),        // for SSL support - REQUIRES NODE v0.3.x OR HIGHER
       domain : options.domain,          // domain used by client to identify itself to server
-      to : options.to,
-      from : options.from,
+      to : options.$to,
+      from : options.$from,
       subject : options.subject,
-      body: options.body,
+      body: options.value,
       authentication : options.authentication,    // auth login is supported; anything else is no auth
       username : options.username,        // username
       password : options.password         // password
     };
+
 	var base64 = function(s){
 		return (new Buffer(s)).toString("base64");
 	};
-	if(options.port){
+	if(options.port !== undefined){
 		mailOptions.port = options.port;
 	}
 	if(!options.body && options.value){
@@ -43,6 +43,6 @@ exports.execute = function(options, callback){
 		mailOptions.password = base64(mailOptions.password);
 	}
 	email.send(mailOptions, function(err, result){
-      callback(err);
+        callback(err);
     });
 };

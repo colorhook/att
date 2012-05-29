@@ -22,6 +22,7 @@ exports.execute = function(options, callback){
 	if(!to){
 		return callback(new Error("The to option is required"));
 	}
+
 	if(files){
 		var copyFile = function(){
 

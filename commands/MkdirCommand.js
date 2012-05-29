@@ -1,4 +1,6 @@
 var fs = require('fs'),
+	path = require('path'),
+	Project = require('../core/Project.js').Project,
 	wrench = require('wrench');
 
 /**
@@ -15,6 +17,9 @@ exports.execute = function(options, callback){
 
 	if(!target){
 		return callback(new Error("The target options is required"));
+	}
+	if(Project.currentProject){
+		target = path.resolve(Project.currentProject.basedir, target);
 	}
 	try{
 		wrench.mkdirSyncRecursive(target, options.permission || 0777);

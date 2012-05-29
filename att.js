@@ -1,4 +1,5 @@
 var program = require("commander"),
+	o_argv = require('optimist').argv,
 	fs = require("fs"),
 	path = require("path"),
 	util = require("util"),
@@ -9,27 +10,35 @@ var program = require("commander"),
 var plugins = {},
 	configuration = exports.configuration = AttUtil.storage(),
 	pluginOption = configuration.plugins || {};
-	argv = process.argv.slice();
+	argv = process.argv.slice(0, 3);
 
 
+exports.version = "0.0.1";
+//添加插件
 var addPlugin = exports.addPlugin = function(module){
 	var name = module.name,
 		description = module.description,
 		action = module.action;
 	plugins[name] = module;
+
 	if(typeof module.initialize == 'function'){
 		module.initialize(pluginOption[name] || {});
 	}
-	program.command(name).description(description).action(action);
+	program.command(module.name).description(module.description).action(module.action);
 };
-var initializePlugins = function(arr){
+//获取插件
+var getPlugin = exports.getPlugin = function(name){
+	return plugins[name];
+};
+//根据路径或者路径列表自动装载插件
+var loadPlugins = function(arr){
 	if(!arr){
 		return;
 	}
 	var plugin;
 	if(util.isArray(arr)){
 		arr.forEach(function(item){
-			initializePlugins(item);
+			loadPlugins(item);
 		});
 	}else{
 		var stat = fs.statSync(arr);
@@ -45,39 +54,39 @@ var initializePlugins = function(arr){
 			});
 		}else if(stat.isFile()){
 			plugin = require(arr);
-			addPlugin(plugin.name, plugin.description, plugin.action);
+			addPlugin(plugin);
 		}
 	}
 };
-
-
-//初始化系统插件
-initializePlugins(__dirname + "/plugins/");
-//初始化自定义插件
-initializePlugins(configuration["external-plugins"]);
-//定义help命令
-program.
-	command("help").
-	action(function(){
-		var name = process.argv[3],
-			printHelp = function(name){
-				console.log("  -> " + name + ":\t" +  (plugins[name].description || ""));
-
-			};
-		if(plugins[name]){
-			printHelp(name);
-		}else{
-			for(var i in plugins){
-				printHelp(i);
-			}
+//装载系统插件
+loadPlugins(__dirname + "/plugins/");
+//装载自定义插件
+loadPlugins(configuration["external-plugins"]);
+//att版本命令
+if(argv.length <= 2 || argv[2].indexOf("-") === 0){
+	if(o_argv.v || o_argv.version){
+		console.log("v%s", exports.version);
+	}else{
+		console.log("att version \"%s\"", exports.version);
+		console.log("Usage: att <command> <...args>");
+		var printHelp = function(name){
+			console.log("  -> " + name + ":\t" +  (plugins[name].description || ""));
+		};
+		for(var i in plugins){
+			printHelp(i);
 		}
-	});
+	}
+	process.exit();
+}
 //定义默认命令
 program.
 	command("*").
 	action(function(name){
-		console.log("The att plugin <" + name + "> is not defined.");
+		if(name.name.indexOf){
+			name = name.name;
+		}
+		console.log("The att plugin <%s> is not defined.", name);
 	});
+
 //解析前3个参数
-argv.length = 3;
 program.parse(argv);

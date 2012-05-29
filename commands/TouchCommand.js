@@ -1,5 +1,6 @@
 var fs = require('fs'),
 	path = require('path'),
+	Project = require('../core/Project.js').Project,
 	wrench = require('wrench');
 
 
@@ -21,6 +22,9 @@ exports.execute = function(options, callback){
 	
 	if(!target){
 		return callback(new Error("The target option is required"));
+	}
+	if(Project.currentProject){
+		target = path.resolve(Project.currentProject.basedir, target);
 	}
 
 	dirname = path.dirname(target);

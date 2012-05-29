@@ -3,6 +3,7 @@ var reporter = require("jslint/lib/reporter");
 var nopt = require("nopt");
 var fs = require("fs");
 
+
 function commandOptions() {
     'use strict';
     var flags = [
@@ -28,21 +29,8 @@ function commandOptions() {
 }
 
 var options = commandOptions();
-
 var parsed = nopt(options);
 
-function die(why) {
-    'use strict';
-    console.warn(why);
-    console.warn("Usage: " + process.argv[1] +
-        " [--" + Object.keys(options).join("] [--") +
-        "] [--] <scriptfile>...");
-    process.exit(1);
-}
-
-if (!parsed.argv.remain.length) {
-    die("No files specified.");
-}
 
 
 // If there are no more files to be processed, exit with the value 1
@@ -90,12 +78,11 @@ function lintFile(file) {
 }
 
 
+
+
 var path = require("path"),
 	glob = require("glob"),
-	argv = require('optimist').argv,
-	jslint = require("jslint/lib/nodelint.js");
-
-
+	argv = require('optimist').argv;
 /**
  * plugin name
  */
@@ -109,12 +96,6 @@ exports.description = "jslint";
 /**
  * plugin action
  */
-
-
-exports.initialize = function(options){
-	
-};
-
 exports.action = function(){
 	var query = process.argv[3];
 

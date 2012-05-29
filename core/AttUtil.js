@@ -77,7 +77,11 @@ exports.format = function(str, dict){
 		}
 	};
 	str = str.replace(/\$\{([a-zA-Z0-9\-\._]+)\}/g, function(match, key){
-		return getValue(key);
+		var s = getValue(key);
+		if(s === undefined){
+			return match;
+		}
+		return s;
 	});
 	return str;
 };
