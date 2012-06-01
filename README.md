@@ -27,13 +27,32 @@ Plugins
 * datauri
 * build
 
-### ATT Build
+### att jslint/jshint
+
+> check javascript syntax.
+
+### att csslint
+
+> check css syntax.
+
+### att minify
+
+> minify html, css, js & images.
+
+## att datauri
+
+> base64 the image in css.
+
+### att build
+
+> build a task by configuration file.
 
 + Define a build configuration file named att.xml.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <project name="att-project" description="att-project-description" default="build" basedir=".">
+
 	<property name="src" value="src"/>
 	<property name="build" value="build"/>
 
@@ -49,6 +68,7 @@ Plugins
 	    <mkdir target="${build}"/>
 	    <touch target="${build}/README"/>
 	</target>
+
 	<target name="minify">
 		<concat to="${build}/combo.js" split="\r\n">
 			<fileset>
@@ -82,6 +102,7 @@ Plugins
 		<![CDATA[
 		This is an email sent by att.
 		]]>
+		</mail>
 	</target>
 
 	<target name="build" depends="echo,clear,create,minify,ftp,notify">
