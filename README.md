@@ -10,7 +10,7 @@ Usage
 att <plugin> <...args>
 ```
 
-* att jshint */**/*.js  检查所有js文件
+* att jshint  * / * * / * .js  检查所有js文件
 * att minify index.html  压缩html
 * att minify icon.png  压缩png
 * att minify app.js  压缩js
@@ -27,12 +27,22 @@ Plugins
 * datauri
 * build
 
-Build
-----
+### ATT Build
+
++ Define a build configuration file named att.xml.
++ Run the command in terminal.
+
+```shell
+att build
+#or
+att build -t taskname
+#or
+att build -t taskname -f your-custom-config-file-name
+```
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<project name="att-project" description="att-project-description" default="clear" basedir=".">
+<project name="att-project" description="att-project-description" default="build" basedir=".">
 	<property name="src" value="src"/>
 	<property name="build" value="build"/>
 
@@ -73,7 +83,7 @@ Build
 		</ftp>
 	</target>
 
-	<target name="deploy">
+	<target name="notify">
 		<input name="mail.password" label="mail password:" type="password"/>
 		<mail host="smtp.gmail.com" ssl="true" port="465" authentication="login"
 			from="colorhook@gmail.com" to="colorhook@gmail.com"
