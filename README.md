@@ -10,7 +10,7 @@ Usage
 att <plugin> <...args>
 ```
 
-* att jshint  * / * * / * .js  检查所有js文件
+* att jshint `*/**/*.js` 检查所有js文件
 * att minify index.html  压缩html
 * att minify icon.png  压缩png
 * att minify app.js  压缩js
@@ -30,15 +30,6 @@ Plugins
 ### ATT Build
 
 + Define a build configuration file named att.xml.
-+ Run the command in terminal.
-
-```shell
-att build
-#or
-att build -t taskname
-#or
-att build -t taskname -f your-custom-config-file-name
-```
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -96,6 +87,15 @@ att build -t taskname -f your-custom-config-file-name
 	<target name="build" depends="echo,clear,create,minify,ftp,notify">
 	</target>
 </project>
+```
++ Run the command in terminal.
+
+```shell
+att build
+#or
+att build -t taskname
+#or
+att build -t taskname -f your-custom-config-file-name
 ```
 
 Licence
