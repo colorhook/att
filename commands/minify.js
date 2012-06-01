@@ -1,8 +1,8 @@
 var path = require('path'),
-	uglifyjsCommand = require("./UglifyJSCommand.js"),
-	smushitCommand = require("./SmushitCommand.js"),
-	cleancssCommand = require("./CleanCSSCommand.js"),
-	htmlminifierCommand = require("./HTMLMinifierCommand.js");
+	uglifyjsCommand = require("./uglifyjs.js"),
+	smushitCommand = require("./smushit.js"),
+	cleancssCommand = require("./cleancss.js"),
+	htmlminifierCommand = require("./htmlminifier.js");
 
 /**
  * @name minify

@@ -1,4 +1,4 @@
-var commandManager = require("./CommandManager.js"),
+var att = require("../att.js"),
 	Project = require("./Project.js").Project,
 	AttUtil = require("./AttUtil.js");
 
@@ -27,9 +27,13 @@ Target.prototype.run = function(callback, itemCallback){
 				options[i] = ci;
 			}
 		}
-		commandManager.executeCommand(commandName, options, function(err, data){
-			itemCallback && itemCallback(err, data);
-			commandCallback();
+		att.executeCommand(commandName, options, function(err, data){
+			itemCallback && itemCallback(err, commandName, data);
+			if(err){
+				callback(err);
+			}else{
+				commandCallback();
+			}
 		});
 		
 	}, callback);

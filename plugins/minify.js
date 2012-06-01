@@ -4,7 +4,7 @@ var path = require("path"),
 	wrench = require("wrench"),
 	program = require("commander"),
 	AttUtil = require("../core/AttUtil.js"),
-	MinifyCommand = require("../commands/MinifyCommand.js");
+	MinifyCommand = require("../commands/minify.js");
 
 
 var mapper,

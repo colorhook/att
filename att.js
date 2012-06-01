@@ -8,12 +8,14 @@ var program = require("commander"),
 
 
 var plugins = {},
+	commandMap = {},
 	configuration = exports.configuration = AttUtil.storage(),
 	pluginOption = configuration.plugins || {};
 	argv = process.argv.slice(0, 3);
 
+//版本定义
+exports.version = "3.0.0alpha";
 
-exports.version = "0.0.1";
 //添加插件
 var addPlugin = exports.addPlugin = function(module){
 	var name = module.name,
@@ -32,43 +34,54 @@ var getPlugin = exports.getPlugin = function(name){
 };
 //根据路径或者路径列表自动装载插件
 var loadPlugins = function(arr){
-	if(!arr){
-		return;
-	}
-	var plugin;
-	if(util.isArray(arr)){
-		arr.forEach(function(item){
-			loadPlugins(item);
-		});
-	}else{
-		var stat = fs.statSync(arr);
-		if(stat.isDirectory()){
-			FileUtil.each(arr, function(item){
-				plugin = require(item.fullName);
-				addPlugin(plugin);
-			}, {
-				recursive: false,
-				matchFunction: function(item){
-					return item.name.match(/\.js$/i);
-				}
-			});
-		}else if(stat.isFile()){
-			plugin = require(arr);
-			addPlugin(plugin);
-		}
-	}
+	AttUtil.findFile(arr, function(item){
+		addPlugin(require(item));
+	}, "js");
 };
 //装载系统插件
 loadPlugins(__dirname + "/plugins/");
 //装载自定义插件
 loadPlugins(configuration["external-plugins"]);
+
+//添加命令
+var addCommand = exports.addCommand = function(command){
+	commandMap[command.name] = command;
+};
+//移除命令
+var removeCommand = exports.removeCommand = function(name){
+	delete commandMap[name];
+};
+//获取命令
+var getCommand = exports.getCommand = function(name){
+	return commandMap[name];
+};
+
+//执行命令
+var executeCommand = exports.executeCommand = function(name, options, callback){
+	var command = commandMap[name];
+	if(!command){
+		return callback(new Error('command named [' + name + '] not found'));
+	}
+	command.execute(options, callback);
+};
+//根据路径或者路径列表自动装载命令
+var loadCommands = function(arr){
+	AttUtil.findFile(arr, function(item){
+		addCommand(require(item));
+	}, "js");
+};
+//装载系统命令
+loadCommands(__dirname + "/commands/");
+//装载自定义命令
+loadCommands(configuration["external-commands"]);
+
 //att版本命令
 if(argv.length <= 2 || argv[2].indexOf("-") === 0){
 	if(o_argv.v || o_argv.version){
 		console.log("v%s", exports.version);
 	}else{
 		console.log("att version \"%s\"", exports.version);
-		console.log("Usage: att <command> <...args>");
+		console.log("Usage: att <plugin> <...args>");
 		var printHelp = function(name){
 			console.log("  -> " + name + ":\t" +  (plugins[name].description || ""));
 		};
@@ -82,7 +95,7 @@ if(argv.length <= 2 || argv[2].indexOf("-") === 0){
 program.
 	command("*").
 	action(function(name){
-		if(name.name.indexOf){
+		if(name.name && name.name.indexOf){
 			name = name.name;
 		}
 		console.log("The att plugin <%s> is not defined.", name);

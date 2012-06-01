@@ -3,7 +3,7 @@ var path = require("path"),
 	argv = require('optimist').argv,
 	wrench = require("wrench"),
 	program = require("commander"),
-	DataURICommand = require("../commands/DataURICommand.js");
+	DataURICommand = require("../commands/datauri.js");
 
 
 var mapper,

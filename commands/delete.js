@@ -20,6 +20,7 @@ var execute = function(options, callback){
 		exists,
 		stat;
 
+
 	if(files){
 		var deleteFile = function(){
 			var file = files.shift();

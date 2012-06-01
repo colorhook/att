@@ -3,7 +3,7 @@ var fs = require("fs"),
 	XML = require("node-jsxml").XML,
 	pParser = require("node-properties-parser"),
 	AttUtil = require("../core/AttUtil.js"),
-	commandManager = require("../core/CommandManager.js"),
+	att = require("../att.js"),
 	FileSet = require("../core/FileSet.js"),
 	Project = require("../core/Project.js").Project,
 	Target = require("../core/Target.js").Target;
@@ -61,7 +61,7 @@ parse = function(data, rootdir){
 	xml.child('plugin').each(function(item){
 		var file = getAttr(item, 'file');
 		if(path.existSync(file)){
-			commandManager.addCommand(file);
+			att.addCommand(file);
 		}else{
 			throw new Error("The plugin not found at " + file);
 		}
@@ -94,11 +94,11 @@ parse = function(data, rootdir){
 
 		item.children().each(function(child){
 			var localName = child.localName(), 
-				command = commandManager.getCommand(localName),
+				command = att.getCommand(localName),
 				options;
 
 			if(!command){
-				throw new Error("Cannot find the command named " + localName);
+				throw new Error("Cannot find the command named <" + localName + ">");
 			}
 			if(command.parseXML){
 				options = command.parseXML(child, project, exports) || {};

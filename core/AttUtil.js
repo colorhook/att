@@ -1,5 +1,7 @@
 var fs = require("fs"),
-	util = require("util");
+	path = require("path"),
+	util = require("util"),
+	FileUtil = require("./FileUtil.js");
 
 /**
  * 顺序执行一些异步任务
@@ -129,3 +131,43 @@ exports.toBoolean = function(v){
 	}
 	return false;
 };
+
+/**
+ * 寻找文件
+ */
+exports.findFile = function(arr, callback, ext, recursive){
+	if(!arr){
+		return;
+	}
+	if(ext && !util.isArray(ext)){
+		ext = [ext];
+	};
+	if(util.isArray(ext)){
+		ext.forEach(function(item, index){
+			ext[index] = item.toLowerCase();
+		})
+	};
+	if(util.isArray(arr)){
+		arr.forEach(function(item){
+			exports.findFile(item, callback);
+		});
+	}else{
+		var stat = fs.statSync(arr);
+		if(stat.isDirectory()){
+			FileUtil.each(arr, function(item){
+				callback(item.fullName);
+			}, {
+				recursive: recursive,
+				matchFunction: function(item){
+					var extName = path.extname(item.fullName).toLowerCase().replace(".", "");
+					if(!ext){
+						return true;
+					}
+					return ext.indexOf(extName) != -1;
+				}
+			});
+		}else if(stat.isFile()){
+			callback(arr);
+		}
+	}
+}

@@ -4,7 +4,8 @@ var fs = require("node-fs"),
 	util = require('util'),
 	events = require("events"),
 	FileUtil = require("./FileUtil.js"),
-	AttUtil = require("./AttUtil.js");
+	AttUtil = require("./AttUtil.js"),
+	Reporter = require("./Reporter.js").Reporter;
 
 
 /**
@@ -23,6 +24,7 @@ var Project = function(){
 	this.defaultTargetName = "build";
 	this.logLevel = "info";
 	this.targetName = null;
+	this.reporter = new Reporter(this);
 };
 
 
@@ -41,7 +43,6 @@ Project.prototype.log = function(type, message){
 		},
 		v1 = map[this.logLevel],
 		v2 = map[type];
-	
 
 	if(v1 >= v2){
 		console.log("========== ATT [" + type + "] " + message);
@@ -187,7 +188,6 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 		name = name.trim();
 	}
 	if(!this.getTarget(name)){
-		this.log("error", "target " + name + " not found");
 		callback(new Error("target " + name + " not found"));
 		return;
 	}
@@ -200,7 +200,13 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 			if(!d || d=== ""){
 				callback2();
 			}else{
-				that.runTarget(d, callback2);
+				that.runTarget(d, function(e){
+					if(e){
+						callback(e);
+					}else{
+						callback2();
+					}
+				});
 			}
 		}, function(){
 			that.runTarget(name, callback, true);
@@ -208,25 +214,27 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 		return;
 	}
 	this.emit('targetStart', target);
-	that.log('verbose', 'target [' + name +'] start runnig');
 	target.run(function(err){
-		//err &&	that.log('error', 'target [' + name +'] error occur' + err.toString());
-		that.log('verbose', 'target [' + name +'] finished');
 		that.emit('targetFinish', target, err);
 		callback(err);
+	}, function(err, commandName, data){
+		that.emit('targetItem', target, err, commandName, data);
 	});
-	
 };
 
 Project.prototype.run = function(targetName){
 	var self = this;
 	this.targetName = targetName || this.defaultTargetName;
 	Project.currentProject = this;
-	this.log("verbose", "project [" + (this.name || "<missing project name>") + "] start running");
+	this.emit("beforeStart", self);
 	this.onBeforeExecute();
 	this._beforeExecute(function(){
+		self.emit("start", self);
 		self.runTarget(self.targetName, function(err){
-			self.onAfterExecute(err);
+			self.emit("beforeFinish", self);
+			self.onAfterExecute(function(){
+				self.emit("finish", self, err);
+			});
 		});
 	});
 };
@@ -241,7 +249,6 @@ Project.prototype._beforeExecute = function(callback){
  * @description defore the project start to execute, active all the relatived listeners.
  */
 Project.prototype.onBeforeExecute = function(){
-	this.emit("beforeStart");
 	var that = this,
 		listeners = this.listeners;
 	if(listeners && util.isArray(listeners)){
@@ -249,7 +256,6 @@ Project.prototype.onBeforeExecute = function(){
 			that.activeListener(item);
 		});
 	}
-	this.emit("start");
 };
 Project.prototype._afterExecute = function(callback){
 	AttUtil.doSequenceTasks(this._afterCallbacks, function(item, success){
@@ -259,20 +265,18 @@ Project.prototype._afterExecute = function(callback){
 /**
  * @description after the project executed, deactive all the relatived listeners.
  */
-Project.prototype.onAfterExecute = function(err){
-	this.emit("afterStart");
+Project.prototype.onAfterExecute = function(callback){
 	var that = this,
 		listeners = this.listeners;
-
-	this._afterExecute(function(){
+	
+	this._afterExecute(function(err){
 		if(listeners && util.isArray(listeners)){
 			listeners.forEach(function(item){
 				that.deactiveListener(item);
 			});
 		}
 		process.stdin.destroy();
-		that.emit("finish", err);
-		that.log("verbose", "project [" + (that.name || "<missing project name>") + "] finished");
+		callback();
 		Project.currentProject = null;
 	});
 };

@@ -32,8 +32,14 @@ exports.action = function(query, options){
 	file = file || "att.xml";
 
 	if(!path.existsSync(file)){
-		return console.log("the configuration file " + file + " not found.");
+		return console.log("Buildfile: " + file + " does not exist!");
 	}
-	var project = parser.parseFile(file);
+	var project;
+	
+	try{
+		project = parser.parseFile(file);
+	}catch(err){
+		return console.log("Build Parse Error: " + err.message);
+	}
 	project.run(task);
 };

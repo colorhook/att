@@ -34,7 +34,7 @@
 		"mailer": "~0.6.7",
 		"ftp": "~0.1.2",
 		"jslint": "~0.1.8",
-		"jshint": "",
+		"jshint": ""
     },
     "homepage": "https://github.com/colorhook/att",
     "repository" : {

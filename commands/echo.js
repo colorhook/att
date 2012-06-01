@@ -6,6 +6,7 @@ exports.name = "echo";
  * @option content {String}
  */
 exports.execute = function(options, callback){
-	console.log(options ? (options.value || "") : "");
+	var log = options ? (options.value || "") : "";
+	console.log(log);
 	return callback();
 };
