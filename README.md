@@ -10,22 +10,22 @@ Usage
 att <plugin> <...args>
 ```
 
-*att jshint */**/*.js  检查所有js文件
-*att minify index.html  压缩html
-*att minify icon.png  压缩png
-*att minify app.js  压缩js
-*att minify style.css  压缩css
-*att datauri style.css  对css中的图片进行datauri编码
+* att jshint */**/*.js  检查所有js文件
+* att minify index.html  压缩html
+* att minify icon.png  压缩png
+* att minify app.js  压缩js
+* att minify style.css  压缩css
+* att datauri style.css  对css中的图片进行datauri编码
 
 Plugins
 ----
 
-*jslint
-*jshint
-*csslint
-*minify
-*datauri
-*build
+* jslint
+* jshint
+* csslint
+* minify
+* datauri
+* build
 
 Build
 ----
@@ -63,7 +63,8 @@ Build
 
 	<target name="ftp">
 		<input name="ftp.password" label="ftp password:"/>
-		<ftp host="your-ftp-host" username="root" password="${ftp.password}" port="21" remotedir="/att">
+		<ftp host="your-ftp-host" username="root" password="${ftp.password}" port="21" 
+			remotedir="/att">
 			<upload>
 				<fileset>
 					<include file="${build}/combo-min.js"/>
