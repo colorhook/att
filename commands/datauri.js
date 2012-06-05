@@ -1,5 +1,6 @@
 var fs = require('fs'),
-	path = require('path');
+	path = require('path'),
+	att = require("../att.js");
 
 var transform = exports.transform = function(input, basePath, ieCompat, maxSize){
 	if(maxSize === undefined){
@@ -41,18 +42,21 @@ exports.execute = function(options, callback){
 	var from = options.from,
 		to = options.to,
 		fileContent,
+		ieCompat = options.ieCompat,
 		charset = options.charset || "utf-8";
 
 	if(!from || !to){
 		return callback(new Error("The from and to options are required"));
 	}
-
+	if(ieCompat === undefined){
+		ieCompat = att.configuration.commands.datauri.ieCompat;
+	}
 	try{
 		fileContent = fs.readFileSync(from, charset);
 	}catch(err){
 		return callback(err);
 	}
-	fileContent = transform(fileContent, path.dirname(from), options.ieCompat, options.maxSize);
+	fileContent = transform(fileContent, path.dirname(from), ieCompat, options.maxSize);
 	try{
 		fs.writeFileSync(to, fileContent, charset);
 	}catch(err){

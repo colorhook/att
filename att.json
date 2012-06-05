@@ -1,8 +1,32 @@
 {
+	"commands":{
+		"htmlminifier": {
+			"removeComments": true,
+			"removeCommentsFromCDATA": true,
+			"removeCDATASectionsFromCDATA": true,
+			"collapseWhitespace": true,
+			"collapseBooleanAttributes": true,
+			"removeAttributeQuotes": false,  
+			"removeRedundantAttributes": true,
+			"useShortDoctype": true,
+			"removeEmptyAttributes": true,
+			"removeEmptyElements": false,
+			"removeOptionalTags": false,
+			"removeScriptTypeAttributes": true,
+			"removeStyleLinkTypeAttributes": true
+		},
+		"less": {
+			"compress": true
+		},
+		"datauri":{
+			"ieCompat": true
+		}
+	},
+	"external-commands":[],
 	"plugins":{
 		"minify": {
 			
 		}
 	},
-	"external-plugins": []
+	"external-plugins": ["D:\\Develop\\git\\att-plugins\\"]
 }

@@ -78,7 +78,7 @@ loadCommands(configuration["external-commands"]);
 //att版本命令
 if(argv.length <= 2 || argv[2].indexOf("-") === 0){
 	if(o_argv.v || o_argv.version){
-		console.log("v%s", exports.version);
+		console.log(exports.version);
 	}else{
 		console.log("att version \"%s\"", exports.version);
 		console.log("Usage: att <plugin> <...args>");

@@ -1,5 +1,6 @@
 var fs = require('fs'),
-	less = require('less');
+	less = require('less'),
+	att = require("../att.js");
 
 
 
@@ -18,7 +19,12 @@ exports.execute = function(options, callback){
 		to = options.to,
 		fileContent,
 		parser = new (less.Parser)(options),
-		charset = options.charset || "utf-8";
+		charset = options.charset || "utf-8",
+		defaults = att.configuration.commands.less || {};
+
+	if(options.compress !== undefined){
+		defaults.compress = options.compress;
+	}
 
 	if(!from || !to){
 		return callback(new Error("The from and to options are required"));
@@ -34,7 +40,7 @@ exports.execute = function(options, callback){
 		if(e){
 			return callback(e);
 		}
-		fileContent = tree.toCSS({ compress: options.compress }); 
+		fileContent = tree.toCSS(defaults); 
 		
 		try{
 			fs.writeFileSync(to, fileContent, charset);

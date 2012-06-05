@@ -1,4 +1,5 @@
 var fs = require("fs"),
+	att = require("../att.js"),
 	minify = require("html-minifier").minify;
 
 
@@ -19,22 +20,10 @@ exports.execute = function(options, callback){
 		to = options.to,
 		fileContent,
 		charset = options.charset || "utf-8",
-		defaults = {
-			removeComments:                 true,
-			removeCommentsFromCDATA:        true,
-			removeCDATASectionsFromCDATA:   true,
-			collapseWhitespace:             true,
-			collapseBooleanAttributes:      true,
-			removeAttributeQuotes:          false,  
-			removeRedundantAttributes:      true,
-			useShortDoctype:                true,
-			removeEmptyAttributes:          true,
-			removeEmptyElements:            false,
-			removeOptionalTags:             false,
-			removeScriptTypeAttributes:     true,
-			removeStyleLinkTypeAttributes:  true
-		};
-	
+		htmlOptions = att.configuration.commands.htmlminifier,
+		defaults = htmlOptions;
+
+
 	for(var i in defaults){
 		if(options[i] !== undefined){
 			defaults[i] = Boolean(options[i]);

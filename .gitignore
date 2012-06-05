@@ -1,5 +1,10 @@
 tmp
 example
 example/*
+docs
+docs/*
+plugins/help.js
+commands/xmpp.js.todo
+commands/qr.js
 cli.js
 att.bat
