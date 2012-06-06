@@ -1,12 +1,8 @@
-ATT - Auto Task Tool
-====
-
+# ATT - Auto Task Tool
 ATT is a terminal tool for develop & deploy web project easier and faster.
 
-Usage
-----
-
-```
+## Usage
+```shell
 att <plugin> <...args>
 ```
 
@@ -17,9 +13,7 @@ att <plugin> <...args>
 * att minify style.css  压缩css
 * att datauri style.css  对css中的图片进行datauri编码
 
-Plugins
-----
-
+## Plugins
 * jslint
 * jshint
 * csslint
@@ -27,24 +21,19 @@ Plugins
 * datauri
 * build
 
-### att jslint/jshint
-
+#### att jslint/jshint
 > check javascript syntax.
 
-### att csslint
-
+#### att csslint
 > check css syntax.
 
-### att minify
-
+#### att minify
 > minify html, css, js & images.
 
-## att datauri
-
+#### att datauri
 > base64 the image in css.
 
-### att build
-
+#### att build
 > build a task by configuration file.
 
 + Define a build configuration file named att.xml.
@@ -109,7 +98,9 @@ Plugins
 	</target>
 </project>
 ```
+
 + Run the command in terminal.
+
 
 ```shell
 att build
@@ -119,13 +110,11 @@ att build -t taskname
 att build -t taskname -f your-custom-config-file-name
 ```
 
-Licence
-----
+## Licence
 
 ATT is free to use under MIT license. 
 
-Bugs & Feedback
-----
+## Bugs & Feedback
 
-Please feel free to report bugs or feature requests.
+Please feel free to [report bugs](http://github.com/colorhook/att/issues) or feature requests.
 You can send me private message on `github`, or send me an email to: [colorhook@gmail.com]

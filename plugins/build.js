@@ -1,4 +1,5 @@
 var path = require("path"),
+    fs = require("fs"),
 	argv = require('optimist').argv,
 	parser = require("../parser/XMLParser.js");
 
@@ -30,10 +31,21 @@ exports.action = function(query, options){
 		}
 	}
 	file = file || "att.xml";
+	
+	
+	if(!path.existsSync(file)){
+		return console.log("Buildfile: " + file + " does not exist!");
+	}
+
+	var stat = fs.statSync(file);
+	if(stat.isDirectory()){
+		file = path.resolve(file + "/att.xml");
+	}
 
 	if(!path.existsSync(file)){
 		return console.log("Buildfile: " + file + " does not exist!");
 	}
+	
 	var project;
 	
 	try{

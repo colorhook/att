@@ -1,3 +1,7 @@
+/**
+ * download the native executable program at
+ * http://stahlworks.com/dev/index.php?tool=zipunzip
+ */
 var exec = require("child_process").exec,
 	path = require("path");
 

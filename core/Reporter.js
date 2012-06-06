@@ -24,6 +24,11 @@ Reporter.prototype.initialize = function(){
 		var info = error ? "failed" : "successful";
 		console.log("ATT build %s, elapsed Time: %s.", info, timeCost());
 	});
+	project.on("targetNotFound", function(project, name, error){
+		if(error){
+			console.log("\n!Error: %s\n", error.message);
+		}
+	});
 	project.on("beforeFinish", function(){
 	});
 	project.on("targetStart", function(target){
@@ -31,8 +36,10 @@ Reporter.prototype.initialize = function(){
 			description = target.description;
 		console.log("task %s: %s\n", name, description);
 	});
+
 	project.on("targetFinish", function(target){
 		console.log("----------------------------------------------------------------");
+	
 		console.log("Task %s elapsed time: %s\n", target.name, timeCost());
 	});
 	project.on("targetItem", function(target, err, commandName, data){

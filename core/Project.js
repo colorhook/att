@@ -188,7 +188,9 @@ Project.prototype.runTarget = function(name, callback, ignoreDepends){
 		name = name.trim();
 	}
 	if(!this.getTarget(name)){
-		callback(new Error("target " + name + " not found"));
+		var e = new Error("target " + name + " was not found");
+		this.emit('targetNotFound', this, name, e);
+		callback(e);
 		return;
 	}
 
