@@ -1,29 +1,28 @@
 var vm = require("vm"),
-	Project = require("../core/Project.js").Project;
+    Project = require("../core/Project.js").Project;
 
 /**
- * @name code
+ * command name
  */
 exports.name = "code";
 
 /**
  * @option value
  */
-exports.execute = function(options, callback){
-	var code = options.value,
-		pname = options.output,
-		output,
-		project = Project.currentProject;
-		
-	options.project = project;
-	if(!code){
-		return callback(new Error("no code specify"));
-	}
-	try{
-		eval(code);
-	}catch(e){
-		return callback(e);
-	}
-	Project.currentProject.addProperty(pname, output);
-	return callback();
+exports.execute = function (options, callback) {
+    var code = options.value,
+        pname = options.output,
+        output, project = Project.currentProject;
+
+    options.project = project;
+    if (!code) {
+        return callback(new Error("In code task the code value must be specified."));
+    }
+    try {
+        eval(code);
+    } catch (e) {
+        return callback(e);
+    }
+    Project.currentProject.addProperty(pname, output);
+    return callback();
 };

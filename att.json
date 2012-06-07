@@ -1,32 +1,37 @@
 {
-	"commands":{
-		"htmlminifier": {
-			"removeComments": true,
-			"removeCommentsFromCDATA": true,
-			"removeCDATASectionsFromCDATA": true,
-			"collapseWhitespace": true,
-			"collapseBooleanAttributes": true,
-			"removeAttributeQuotes": false,  
-			"removeRedundantAttributes": true,
-			"useShortDoctype": true,
-			"removeEmptyAttributes": true,
-			"removeEmptyElements": false,
-			"removeOptionalTags": false,
-			"removeScriptTypeAttributes": true,
-			"removeStyleLinkTypeAttributes": true
-		},
-		"less": {
-			"compress": true
-		},
-		"datauri":{
-			"ieCompat": true
-		}
-	},
-	"external-commands":[],
-	"plugins":{
-		"minify": {
-			
-		}
-	},
-	"external-plugins": ["D:\\Develop\\git\\att-plugins\\"]
+    "currentWorkspace": "att",
+    "workspaces": {
+        "default": "D:\\Develop\\_att_b\\att_work\\zhengxie\\k2\\svn",
+        "att": "D:\\Develop\\git\\att",
+        "a": "1"
+    },
+    "cdnEndpoint": "http://wireless.aliyun-inc.com/space/user/zhengxie/endpoint.php",
+    "commands": {
+        "htmlminifier": {
+            "removeComments": true,
+            "removeCommentsFromCDATA": true,
+            "removeCDATASectionsFromCDATA": true,
+            "collapseWhitespace": true,
+            "collapseBooleanAttributes": true,
+            "removeAttributeQuotes": false,
+            "removeRedundantAttributes": true,
+            "useShortDoctype": true,
+            "removeEmptyAttributes": true,
+            "removeEmptyElements": false,
+            "removeOptionalTags": false,
+            "removeScriptTypeAttributes": true,
+            "removeStyleLinkTypeAttributes": true
+        },
+        "less": {
+            "compress": true
+        },
+        "datauri": {
+            "ieCompat": true
+        }
+    },
+    "external-commands": [],
+    "plugins": {
+        "minify": {}
+    },
+    "external-plugins": ["D:\\Develop\\git\\att-plugins\\"]
 }

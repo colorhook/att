@@ -2,10 +2,8 @@ var fs = require('fs'),
 	less = require('less'),
 	att = require("../att.js");
 
-
-
 /**
- * @name less
+ * command name
  */
 exports.name = "less";
 
@@ -27,7 +25,7 @@ exports.execute = function(options, callback){
 	}
 
 	if(!from || !to){
-		return callback(new Error("The from and to options are required"));
+		return callback(new Error("In less task the from and to options are required."));
 	}
 
 	try{

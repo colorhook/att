@@ -1,7 +1,7 @@
 var commander = require("commander");
 
 /**
- * @name sleep
+ * command name
  */
 exports.name = "sleep";
 
@@ -9,13 +9,13 @@ exports.name = "sleep";
 /**
  * @option time
  */
-exports.execute = function(options, callback){
-	var time = Number(options.time);
-	if(!time || isNaN(time) || time <= 0){
-		return new Callback(new Error("The time must be a number greater than 0."));
-	}
+exports.execute = function (options, callback) {
+    var time = Number(options.time);
+    if (!time || isNaN(time) || time <= 0) {
+        return new Callback(new Error("In sleep task the time must be a number greater than 0."));
+    }
 
-	setTimeout(function(){
-		callback();
-	}, time);
+    setTimeout(function () {
+        callback();
+    }, time);
 };

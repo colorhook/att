@@ -1,39 +1,38 @@
 var commander = require("commander");
 
 /**
- * @name input
+ * command name
  */
 exports.name = "input";
-
 
 /**
  * @option name
  * @option label
  */
-exports.execute = function(options, callback){
-	var name = options.name,
-		label = options.label,
-		type = options.type,
-		method = "prompt",
-		dv = options["default"] || "";
-	
-	if(!name || !label){
-		return callback(new Error("The name and label options are required"));
-	}
+exports.execute = function (options, callback) {
+    var name = options.name,
+        label = options.label,
+        type = options.type,
+        method = "prompt",
+        dv = options["default"] || "";
 
-	if(type == "password"){
-		method = "password";
-	}
+    if (!name || !label) {
+        return callback(new Error("In input task the name and label options are required."));
+    }
 
-	commander[method](label + " ", function(v){
-		if(!v || v === ""){
-			v = dv;
-		}
-		if(type && type.toLowerCase() === 'boolean'){
-			v = Boolean(v);
-		}
-		Project.currentProject.addProperty(name, v);
-		process.stdin.destroy();
-		callback();
-	});
+    if (type == "password") {
+        method = "password";
+    }
+
+    commander[method](label + " ", function (v) {
+        if (!v || v === "") {
+            v = dv;
+        }
+        if (type && type.toLowerCase() === 'boolean') {
+            v = Boolean(v);
+        }
+        Project.currentProject.addProperty(name, v);
+        process.stdin.destroy();
+        callback();
+    });
 };

@@ -3,6 +3,7 @@
     "version": "3.0.0alpha",
 	"description": "an Auto Task Tool for Web Developers",
     "keywords": ["att", "web build", "minify", "web performance"],
+	"bin" : { "att" : "./bin/att" },
     "main": "att.js",
     "engines": {
         "node" : ">=0.6.3"
@@ -33,8 +34,8 @@
 		"node-smushit": "~0.1.0",
 		"mailer": "~0.6.7",
 		"ftp": "~0.1.2",
-		"jslint": "~0.1.8",
-		"jshint": "~0.7.1"
+		"jshint": "~0.7.1",
+		"csslint": "~0.9.8"
     },
     "homepage": "https://github.com/colorhook/att",
     "repository" : {

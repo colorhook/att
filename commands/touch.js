@@ -3,9 +3,8 @@ var fs = require('fs'),
 	Project = require('../core/Project.js').Project,
 	wrench = require('wrench');
 
-
 /**
- * @name touch
+ * command name
  */
 exports.name = "touch";
 
