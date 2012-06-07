@@ -95,7 +95,7 @@ exports.storage = function (key, value) {
         charset = 'utf-8',
         save = function (o) {
             try {
-                fs.writeFileSync(configFile, JSON.stringify(o), charset);
+                fs.writeFileSync(configFile, JSON.stringify(o, null, 4), charset);
             } catch (err) {}
 			
         };

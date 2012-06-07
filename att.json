@@ -2,8 +2,7 @@
     "currentWorkspace": "att",
     "workspaces": {
         "default": "D:\\Develop\\_att_b\\att_work\\zhengxie\\k2\\svn",
-        "att": "D:\\Develop\\git\\att",
-        "a": "1"
+        "att": "D:\\Develop\\git\\att"
     },
     "cdnEndpoint": "http://wireless.aliyun-inc.com/space/user/zhengxie/endpoint.php",
     "commands": {
@@ -33,5 +32,7 @@
     "plugins": {
         "minify": {}
     },
-    "external-plugins": ["D:\\Develop\\git\\att-plugins\\"]
+    "external-plugins": [
+        "D:\\Develop\\git\\att-plugins\\"
+    ]
 }
