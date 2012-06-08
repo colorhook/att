@@ -39,7 +39,7 @@ var datauriFile = function (file, callback) {
         DataURICommand.execute({
             from: file,
             to: toName,
-            ieCompat: ieCompat
+            fixIE: fixIE
         }, function (err) {
             if (err) {
                 console.log("Error occur while handling file: " + file);
@@ -64,8 +64,8 @@ exports.initialize = function (options) {
     if (options.mapper) {
         mapper = require(__dirname + "/../" + options.mapper);
     }
-    if (options.ieCompat !== undefined) {
-        ieCompat = options.ieCompat;
+    if (options.fixIE !== undefined) {
+        fixIE = options.fixIE;
     }
 };
 /**

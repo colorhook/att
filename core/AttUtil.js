@@ -1,6 +1,10 @@
 var fs = require("fs"),
+	url = require("url"),
+	http = require("http"),
     path = require("path"),
     util = require("util"),
+	minimatch = require("minimatch"),
+	querystring = require("querystring"),
     FileUtil = require("./FileUtil.js");
 
 /**
@@ -41,7 +45,7 @@ exports.readComment = function (key, content) {
     if (!matches || !matches[0]) {
         return null;
     }
-    matches[0].replace(/\*\s*@(\w+)\s*([^@\*]+?)/g, function (match, v1, v2) {
+    matches[0].replace(/\*\s*@(\w+)\s*([^@\*]+)/g, function (match, v1, v2) {
         if (!ret && v1.trim() == key) {
             ret = v2.trim();
         }
@@ -158,6 +162,7 @@ exports.findFile = function (arr, callback, ext, recursive) {
                 callback(item.fullName);
             }, {
                 recursive: recursive,
+				excludeDirectory: true,
                 matchFunction: function (item) {
                     var extName = path.extname(item.fullName).toLowerCase().replace(".", "");
                     if (!ext) {
@@ -170,4 +175,145 @@ exports.findFile = function (arr, callback, ext, recursive) {
             callback(arr);
         }
     }
+};
+
+/**
+ * 寻找缓存文件
+ */
+exports.findTmpFile = function(glob, callback, ext){
+	exports.findFile(__dirname + "/../tmp", function(file){
+		var m = glob ? minimatch(file, glob, {nocase: true, matchBase: true}) : true;
+		if(m){
+			callback(path.resolve(file));
+		}
+	}, ext, true);
+};
+exports.getTmpFile = function(glob, callback, ext){
+	var files = [];
+	exports.findTmpFile(glob, function(file){
+		files.push(file);
+	}, ext);
+	return files;
+};
+
+exports.post = function(endpoint, params, success, fail){
+	var httpRequest,
+		onRequestCompleted,
+		options = url.parse(endpoint);
+
+	options.path = options.pathname;
+	options.method = "POST";
+	
+	onRequestCompleted= function(response) {
+	  var resBody = '';
+	  response.on('data', function(chunk) {
+		resBody += chunk;
+	  });
+	  response.on('end', function() {
+		  success && success(resBody);
+	  });
+	};
+	for(var i in params){
+		params[i] = encodeURIComponent(params[i]);
+	}
+	var postData = querystring.stringify(params);
+
+	options.headers = {
+		"Content-Type": "application/x-www-form-urlencoded",
+		"Content-Length": postData.length
+	}
+	httpRequest = http.request(options, onRequestCompleted);
+	httpRequest.write(postData);
+	httpRequest.end();
+
+	if(fail){
+		httpRequest.on('error', fail);
+	}
+};
+
+
+var	buildRequestBody = function(fullName, uploadIdentifier, params){
+	var boundary = '------multipartformboundary' + (new Date).getTime();
+	var dashdash = '--';
+	var crlf     = '\r\n';
+
+	/* Build RFC2388. */
+	var builder = '';
+
+	builder += dashdash;
+	builder += boundary;
+	builder += crlf;
+
+	builder += 'Content-Disposition: form-data; name="'+ uploadIdentifier +'"';
+	//支持文件名为中文
+	builder += '; filename="' + encodeURIComponent(fullName.replace(/.+\//, '')) + '"';
+	builder += crlf;
+
+	builder += 'Content-Type: application/octet-stream';
+	builder += crlf;
+	builder += crlf;
+
+	/* 写入文件 */
+	builder += fs.readFileSync(fullName, "binary");
+	builder += crlf;
+
+	params = params || {};
+	/* 传递额外参数 */
+	for(var i in params){
+		if(params.hasOwnProperty(i)){
+			builder += dashdash;
+			builder += boundary;
+			builder += crlf;
+
+			builder += 'Content-Disposition: form-data; name="'+ i +'"';
+			builder += crlf;
+			builder += crlf;
+			//支持参数为中文
+			builder += encodeURIComponent(params[i]);
+			builder += crlf;
+		}
+	}
+
+
+	/* 写入边界 */
+	builder += dashdash;
+	builder += boundary;
+	builder += dashdash;
+	builder += crlf;
+	//console.log(builder);
+	return {
+		contentType: 'multipart/form-data; boundary=' + boundary,
+		builder: builder
+	}
 }
+exports.upload = function(endpoint, file, params, success, fail, identify){
+	var httpRequest,
+		onRequestCompleted,
+		options = url.parse(endpoint);
+
+	options.path = options.pathname;
+	options.method = "POST";
+	
+	onRequestCompleted= function(response) {
+	  var resBody = '';
+	  response.on('data', function(chunk) {
+		resBody += chunk;
+	  });
+	  response.on('end', function() {
+		  success && success(resBody);
+	  });
+	};
+
+	var postData = buildRequestBody(file, identify || "file", params);
+	options.headers =  {
+	  'Content-Type': postData.contentType,
+	  'Content-Length': postData.builder.length
+	}
+	httpRequest = http.request(options, onRequestCompleted);
+	httpRequest.write(postData.builder, "binary");
+	httpRequest.end();
+
+	if(fail){
+		httpRequest.on('error', fail);
+	}
+};

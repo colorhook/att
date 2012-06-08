@@ -25,12 +25,17 @@
             "compress": true
         },
         "datauri": {
-            "ieCompat": true
+            "fixIE": true,
+			"maxSize": 32700
         }
     },
     "external-commands": [],
     "plugins": {
-        "minify": {}
+        "minify": {
+			"datauri": true,
+			"toAbsolutePath": true,
+			"mapper": "./mappers/VersionMapper"
+		}
     },
     "external-plugins": [
         "D:\\Develop\\git\\att-plugins\\"
