@@ -14,12 +14,6 @@ att <plugin> <...args>
 * att datauri style.css  对css中的图片进行datauri编码
 
 ## Plugins
-* jslint
-* jshint
-* csslint
-* minify
-* datauri
-* build
 
 #### att jslint/jshint
 > check javascript syntax.
@@ -101,12 +95,18 @@ att <plugin> <...args>
 
 + Run the command in terminal.
 
-
 ```shell
 att build
-#or
+```
+
++ Run the special task
+
+```shell
 att build -t taskname
-#or
+```
++ Run the special task by special config file
+
+```shell
 att build -t taskname -f your-custom-config-file-name
 ```
 

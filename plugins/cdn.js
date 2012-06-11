@@ -54,7 +54,7 @@ var uploadCDN = function(file, callback){
 		if(json.code == 200){
 			console.log("upload success: " + file);
 		}else{
-			console.log("upload failed: " + json.error);
+			console.log("upload failed: " + json.msgs);
 		}
 		callback && callback();
 	}, function(err){
