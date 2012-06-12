@@ -1,5 +1,5 @@
 # ATT - Auto Task Tool
-ATT is a terminal tool for develop & deploy web project easier and faster.
+ATT is a terminal tool for front-end developers to make web project deployment easier and faster.
 
 ## Install
 
