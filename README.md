@@ -21,17 +21,46 @@ att <plugin> <...args>
 ## Plugins
 
 #### att jshint
-> 检查JavaScript预发
+> 检查JavaScript语法
+
+```shell
+att jshint */**/*.js
+```
 
 #### att csslint
 > 检查CSS语法
 
+```shell
+att csshint */**/*.css
+```
+
 #### att minify
 > 压缩HTML, CSS, JavaScript和图片
+压缩后的文件会存在于att的临时目录下，不会覆盖当前的文件。
+
+```shell
+att minify */**/*.*
+```
 
 #### att datauri
 > 对CSS文件中的图片进行Base64编码
+和`att minify`一样，图片经过Base64后的CSS文件会存在于att的临时目录下，不会覆盖当前的文件。
 
+```shell
+att datauri */**/*.css
+```
+
+#### att tmp
+>查看，清除att临时目录
+
++ 查看临时目录
+```shell
+att tmp
+```
++ 清空临时目录
+```shell
+att tmp clear
+```
 #### att workspace
 >添加、查看、删除、修改工作目录。
 
@@ -61,9 +90,22 @@ att workspace goto workSVN
 ```
 
 #### att cdn
-> 传输本地文件到CDN服务器上
-* 首先，使用CDN上传功能需要在CDN服务器上部署一个HTTP service, 通过一个API接口来让att控制台和CDN服务器进行文件传输。
-* 其次，在att的配置文件att.json中需要配置当前的工作目录，该目录一般为某个版本库的根路径，可以配置多个工作目录。
+> 传输本地文件到CDN服务器上，这个命令可以将本机js, css, image等资源文件上传都CDN上。
+- 首先，使用CDN上传功能需要在CDN服务器上部署一个HTTP service, 通过一个API接口来让att控制台和CDN服务器进行文件传输。
+- 其次，在att的配置文件att.json中需要配置当前的工作目录，该目录一般为某个版本库的根路径，可以配置多个工作目录。
+
+>上传的过程中，会对js，css和image进行压缩。如果js，css文件中的注释有定义版本号，它默认会在文件后面加上版本号。
+例如一个名为`test.js`文件中顶部注释如下所示，那么上传后的文件名会变成`test-2-3-6.js`
+
+```javascript
+/*!
+ * @version 2-3-6
+ * @author ...
+ * @description ...
+ */
+```
+
+
 + 上传到测试CDN
 
 ```shell

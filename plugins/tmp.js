@@ -25,6 +25,9 @@ exports.action = function () {
         return;
     }
     glob(__dirname + "/../tmp/**/*", function (err, files) {
+		if(files.length == 0){
+			return console.log("the tmp directory is empty");
+		}
         files.forEach(function (item) {
             console.log("  -> " + path.resolve(item));
         });

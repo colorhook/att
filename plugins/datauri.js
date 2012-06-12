@@ -1,4 +1,5 @@
 var path = require("path"),
+	fs = require("fs"),
     glob = require("glob"),
     argv = require('optimist').argv,
     wrench = require("wrench"),
@@ -73,7 +74,8 @@ exports.initialize = function (options) {
  */
 exports.action = function () {
     var query = process.argv[3],
-        silent = argv.s || argv.silent;
+        silent = argv.s || argv.silent,
+		files = [];
 
     if (argv.n !== undefined || argv.nocompat !== undefined) {
         ieCompat = false;
@@ -82,7 +84,16 @@ exports.action = function () {
     if (!query) {
         return console.log("the file glob is required");
     }
-    glob(query, function (err, files) {
+    glob(query, function (err, matches) {
+		matches.forEach(function(){
+			var stat = fs.statSync(item);
+			if(stat.isFile()){
+				files.push(item);
+			}
+		});
+		if(files.length == 0){
+			return console.log("no file matched");
+		}
         if (silent) {
             files.forEach(function (file) {
                 datauriFile(file);

@@ -4,6 +4,8 @@ var path = require("path"),
     argv = require('optimist').argv,
     program = require("commander"),
     att = require("../att.js"),
+	csslint = require("./csslint"),
+	jshint = require("jshint/lib/hint.js"),
     minifyPlugin = require("./minify"),
     AttUtil = require("../core/AttUtil.js");
 
@@ -25,7 +27,9 @@ var updateProductCDN = false,
     minifySupportedFileType = ["html", "htm", "jpg", "jpeg", "gif", "png", "js", "css"],
     minifyNotYesSupportedFileType = ["jpg", "jpeg", "gif", "png"],
     currentWorkspace = att.configuration.currentWorkspace || "default",
-    workspaceRoot, cdnEndpoint;
+    workspaceRoot, cdnEndpoint,
+	checkJS = true,
+	checkCSS = true;
 
 if (!att.configuration.workspaces) {
     att.configuration.workspaces = {};
@@ -118,7 +122,7 @@ var doUpload = function (file, callback) {
  * 处理单个匹配到的文件
  */
 var handleFile = function (file, minifyFirst, callback) {
-		var uploadFunc = function(newFile){
+	  var uploadFunc = function(newFile){
 			 program.confirm("upload to CDN -> " + file + "? ", function (yes) {
 				if (yes) {
 					doUpload(newFile, callback);
@@ -141,6 +145,18 @@ var handleFile = function (file, minifyFirst, callback) {
 	};
 
 
+
+/**
+ * plugin config
+ */
+exports.initialize = function(options){
+	if(options.checkJS !== undefined){
+		checkJS = options.checkJS;
+	}
+	if(options.checkCSS !== undefined){
+		checkCSS = options.checkCSS;
+	}
+}
 /**
  * plugin action
  */
@@ -153,14 +169,11 @@ exports.action = function () {
     var query = process.argv[3],
         silent = argv.s || argv.silent,
         files = [];
-	
-	console.log(query);
 
     //是否更新product CDN
     updateProductCDN = argv.p || argv.product
-
+	
     glob(query, function (err, matched) {
-		console.log(matched);
 		matched.forEach(function(item){
 			var cdnPath = analyticsCDNPath(item);
 			if(cdnPath === false){
@@ -175,6 +188,7 @@ exports.action = function () {
         if (files.length === 0) {
             return console.log("no file matched.");
         }
+		silent = false;
         if (silent) {
             files.forEach(function (file) {
                 handleFile(file);
@@ -182,6 +196,11 @@ exports.action = function () {
         } else {
             AttUtil.doSequenceTasks(files, function (file, callback) {
                 var extname = path.extname(file).replace(/\./, "").toLowerCase();
+				if(extname == "js" && checkJS){
+				   jshint.hint([file]);
+				}else if(extname == "css" && checkCSS){
+				   csslint.checkFile(file);
+				}
                 if (minifySupportedFileType.indexOf(extname) !== -1) {
                     program.confirm("minify the file -> " + file + "? ", function (yes) {
                         if (yes) {
