@@ -4,7 +4,6 @@
         "default": "D:\\Develop\\_att_b\\att_work\\zhengxie\\k2\\svn",
         "att": "D:\\Develop\\git\\att"
     },
-    "cdnEndpoint": "http://m.alicdn.com/att_server/upload.php",
     "commands": {
         "htmlminifier": {
             "removeComments": true,
@@ -35,7 +34,14 @@
             "datauri": true,
             "toAbsolutePath": true,
             "mapper": "./mappers/VersionMapper"
-        }
+        },
+		"cdn": {
+			"endpoint": "http://m.alicdn.com/att_server/upload.php",
+			"datauri": true,
+			"checkJS": false,
+			"checkCSS": false,
+			"mapper": "./mappers/VersionMapper"
+		}
     },
     "external-plugins": [
         "D:\\Develop\\git\\att-plugins\\"

@@ -6,7 +6,7 @@ var path = require("path"),
     att = require("../att.js"),
 	csslint = require("./csslint"),
 	jshint = require("jshint/lib/hint.js"),
-    minifyPlugin = require("./minify"),
+    MinifyCommand = require("../commands/minify.js"),
     AttUtil = require("../core/AttUtil.js");
 
 
@@ -24,6 +24,8 @@ exports.description = "upload assets to the CDN";
  * upload to the CDN
  */
 var updateProductCDN = false,
+	autoDataURI = false,
+	mapper,
     minifySupportedFileType = ["html", "htm", "jpg", "jpeg", "gif", "png", "js", "css"],
     minifyNotYesSupportedFileType = ["jpg", "jpeg", "gif", "png"],
     currentWorkspace = att.configuration.currentWorkspace || "default",
@@ -35,29 +37,28 @@ if (!att.configuration.workspaces) {
     att.configuration.workspaces = {};
 }
 workspaceRoot = att.configuration.workspaces[currentWorkspace];
-cdnEndpoint = att.configuration.cdnEndpoint;
 
 /**
  * 根据文件分析出CDN上传路径
  */
 var analyticsCDNPath = function (filename) {
-        var p = "/" + path.relative(__dirname + "/../tmp", path.dirname(filename));
-        p = p.replace(/\\/g, "/");
-        if (p.indexOf("/..") == 0 || p == "/") {
-            p = "/" + path.relative(workspaceRoot, path.dirname(filename));
-            p = p.replace(/\\/g, "/");
-            if (p.indexOf("/..") == 0 || p == "/") {
-                return false;
-            }
-        } else {
-            return p;
-        }
-        return p;
-    }
+	var p = "/" + path.relative(__dirname + "/../tmp", path.dirname(filename));
+	p = p.replace(/\\/g, "/");
+	if (p.indexOf("/..") == 0 || p == "/") {
+		p = "/" + path.relative(workspaceRoot, path.dirname(filename));
+		p = p.replace(/\\/g, "/");
+		if (p.indexOf("/..") == 0 || p == "/") {
+			return false;
+		}
+	} else {
+		return p;
+	}
+	return p;
+}
 
-    /**
-     * 上传文件到测试CDN或者生产环境的CDN
-     */
+/**
+ * 上传文件到测试CDN或者生产环境的CDN
+ */
 var uploadCDN = function (file, notTest, callback) {
 
         var filename = path.basename(file),
@@ -101,48 +102,92 @@ var uploadCDN = function (file, notTest, callback) {
  * 做更新操作, 先更新test cdn, 再更新product cdn(需要命令行参数有标示)
  */
 var doUpload = function (file, callback) {
-		uploadCDN(file, false, function (err) {
-			if (err) {
-				callback(err);
-			} else if (updateProductCDN) {
-				uploadCDN(file, true, function (err) {
-					if (err) {
-						callback(err);
-					} else {
-						callback();
-					}
-				});
-			} else {
-				callback();
-			}
-		});
-	};
+	uploadCDN(file, false, function (err) {
+		if (err) {
+			callback(err);
+		} else if (updateProductCDN) {
+			uploadCDN(file, true, function (err) {
+				if (err) {
+					callback(err);
+				} else {
+					callback();
+				}
+			});
+		} else {
+			callback();
+		}
+	});
+};
 
+
+/**
+ * 映射到tmp临时目录
+ */
+var toPath = function (file) {
+	var p = path.resolve(__dirname + "/../tmp/" + file),
+		dirname = path.dirname(p),
+		basename = path.basename(p);
+
+	if (mapper && mapper.transform) {
+		p = mapper.transform(file, p);
+	}
+
+	if (!path.existsSync(dirname)) {
+		try {
+			wrench.mkdirSyncRecursive(dirname, 0777);
+		} catch (err) {}
+	}
+	return p;
+};
+
+/**
+ * minify到临时目录
+ */
+var minifyFile = function(file, datauri, callback){
+	var toName = toPath(file);
+	var options = {
+		from: file,
+		to: toName
+	};
+	if (toName.match(/\.css$/i)) {
+		options.datauri = datauri;
+		options.toAbsolutePath = true;
+	}
+	MinifyCommand.execute(options, function (err) {
+		if (err) {
+			console.log("Error occur at: " + file);
+			console.log(err);
+		} else {
+			console.log("minify success: %s -> %s", file, path.basename(toName));
+		}
+		callback && callback(err, toName);
+	});
+}
 /**
  * 处理单个匹配到的文件
  */
 var handleFile = function (file, minifyFirst, callback) {
-	  var uploadFunc = function(newFile){
-			 program.confirm("upload to CDN -> " + file + "? ", function (yes) {
-				if (yes) {
-					doUpload(newFile, callback);
-				} else {
-					callback();
-				}
-			 });
-		};
-		if (minifyFirst) {
-			minifyPlugin.minifyFile(file, function (err, newFile) {
-				if (err) {
-					callback(err);
-				} else {
-					uploadFunc(newFile);
-				}
-			});
-		} else {
-			uploadFunc(file);
-		};
+	var uploadFunc = function(newFile){
+		 program.confirm("upload to CDN -> " + file + "? ", function (yes) {
+			if (yes) {
+				doUpload(newFile, callback);
+			} else {
+				callback();
+			}
+		 });
 	};
+	if (minifyFirst) {
+		minifyFile(file, autoDataURI, function (err, newFile) {
+			if (err) {
+				callback(err);
+			} else {
+				uploadFunc(newFile);
+			}
+		});
+	} else {
+		uploadFunc(file);
+	};
+};
 
 
 
@@ -156,6 +201,10 @@ exports.initialize = function(options){
 	if(options.checkCSS !== undefined){
 		checkCSS = options.checkCSS;
 	}
+	if (options.mapper) {
+        mapper = require(__dirname + "/../" + options.mapper);
+    }
+	cdnEndpoint = options.endpoint;
 }
 /**
  * plugin action
@@ -166,10 +215,13 @@ exports.action = function () {
         console.log("type <att workspace> to set");
         return;
     }
+	if(!cdnEndpoint){
+		return console.log("please set cdn endpoint first");
+	}
     var query = process.argv[3],
-        silent = argv.s || argv.silent,
+        check = argv.c || argv.check,
         files = [];
-
+	
     //是否更新product CDN
     updateProductCDN = argv.p || argv.product
 	
@@ -188,36 +240,68 @@ exports.action = function () {
         if (files.length === 0) {
             return console.log("no file matched.");
         }
-		silent = false;
-        if (silent) {
-            files.forEach(function (file) {
-                handleFile(file);
-            });
-        } else {
-            AttUtil.doSequenceTasks(files, function (file, callback) {
-                var extname = path.extname(file).replace(/\./, "").toLowerCase();
-				if(extname == "js" && checkJS){
-				   jshint.hint([file]);
-				}else if(extname == "css" && checkCSS){
-				   csslint.checkFile(file);
+	
+		AttUtil.doSequenceTasks(files, function (file, callback) {
+
+			var extname = path.extname(file).replace(/\./, "").toLowerCase();
+
+			//检查 js, css syntax
+			if(check === 'true' || (check !== 'false' && extname == "js" && checkJS)){
+				var results = jshint.hint([file]);
+				var len = results.length,
+					str = '',
+					file, error;
+
+				results.forEach(function (result) {
+					file = result.file;
+					error = result.error;
+					str += file  + ': line ' + error.line + ', col ' +
+						error.character + ', ' + error.reason + '\n';
+				});
+
+				if (str) {
+					console.log(str + "\n" + len + ' error' + ((len === 1) ? '' : 's') + "\n");
+				}else{
+					console.log("jshint Perfect: %s", file);
 				}
-                if (minifySupportedFileType.indexOf(extname) !== -1) {
-                    program.confirm("minify the file -> " + file + "? ", function (yes) {
-                        if (yes) {
-                            handleFile(file, true, callback);
-                        } else if (minifyNotYesSupportedFileType.indexOf(extname) !== -1) {
-                            handleFile(file, false, callback);
-                        } else {
-                            callback();
-                        }
-                    });
-                } else {
-					handleFile(file, false, callback);
-                }
-            }, function () {
-                process.stdin.destroy();
-            });
-        }
+
+			}else if(check === 'true' || (check !== 'false' && extname == "css" && checkCSS)){
+			   csslint.checkFile(file);
+			}
+
+			//自动判断是否要压缩代码
+			if (minifySupportedFileType.indexOf(extname) !== -1) {
+				var promptMinify = function(){
+					program.confirm("minify the file -> " + file + "? ", function (yes) {
+						if (yes) {
+							handleFile(file, true, callback);
+						} else if (minifyNotYesSupportedFileType.indexOf(extname) !== -1) {
+							handleFile(file, false, callback);
+						} else {
+							callback();
+						}
+					});
+				},
+				promptDataURI = function(callback2){
+					program.confirm("datauri the file -> " + file + "? ", function (yes) {
+						callback2(yes);
+					});
+				};
+				if(extname === "css"){
+					promptDataURI(function(datauri){
+						autoDataURI = datauri;
+						promptMinify();
+					});
+				}else{
+					promptMinify();
+				}
+			} else {
+				handleFile(file, false, callback);
+			}
+		}, function () {
+			process.stdin.destroy();
+		});
+
     });
 
 };

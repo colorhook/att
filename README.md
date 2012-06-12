@@ -10,13 +10,15 @@ ATT is a terminal tool for develop & deploy web project easier and faster.
 att <plugin> <...args>
 ```
 
-* att jshint `*/**/*.js` 检查所有js文件
-* att minify index.html  压缩html
-* att minify icon.png  压缩png
-* att minify app.js  压缩js
-* att minify style.css  压缩css
-* att smushit icon.png 压缩图片并替换原有图片
-* att datauri style.css  对css中的图片进行datauri编码
+* `att jshint */**/*.js` 检查所有js文件
+* `att minify index.html`  压缩html
+* `att minify icon.png`  压缩png
+* `att minify app.js`  压缩js
+* `att minify style.css`  压缩css
+* `att smushit icon.png` 压缩图片并替换原有图片
+* `att datauri style.css`  对css中的图片进行datauri编码
+* `att cdn app.js` 上传文件到CDN
+* `att build task` 根据XML文件build一个工程
 
 ## Plugins
 
@@ -54,10 +56,12 @@ att datauri */**/*.css
 >查看，清除att临时目录
 
 + 查看临时目录
+
 ```shell
 att tmp
 ```
 + 清空临时目录
+
 ```shell
 att tmp clear
 ```
@@ -105,7 +109,6 @@ att workspace goto workSVN
  */
 ```
 
-
 + 上传到测试CDN
 
 ```shell
@@ -119,7 +122,8 @@ att cdn /product/project/*/**/*.js -p
 ```
 
 #### att build
-> 根据XML配置文件来build工程
+> 根据XML配置文件来build工程，在XML配置文件中，可以通过标签来表示一系列的动作，包括创建、删除，移动文件和文件夹，修改文件和文件夹名称，
+合并文件，对CSS进行DataURI，压缩图片, HTML, CSS和JavaScript，合并成zip包，甚至上传到FTP和发邮件。
 
 + 先定义一个att.xml配置文件
 
@@ -153,6 +157,7 @@ att cdn /product/project/*/**/*.js -p
 				<include file="${src}/js/app.js"/>
 			</fileset>
 		</concat>
+		<minify from="${src}/style.css" to="${build}/style.css"/>
 		<minify from="${build}/combo.js" to="${build}/combo-min.js"/>
 	</target>
 
@@ -200,6 +205,15 @@ att build -t taskname
 ```shell
 att build -t taskname -f your-custom-config-file-name
 ```
+> 如果要在`att.xml`中使用`zip`命令，需要操作系统的PATH路径下有zip命令，如果没有安装过zip包，可以从[这里](http://stahlworks.com/dev/index.php?tool=zipunzip)下载。
+
+
+#### att html2pdf
+> 将HTML页面转化成PDF，需要先安装`wkhtmltopdf`库，并把可执行文件加入到PATH路径下。
+
+```shell
+att html2pdf */**/*.html
+```
 
 ## Licence
 
@@ -207,5 +221,5 @@ ATT is free to use under MIT license.
 
 ## Bugs & Feedback
 
-Please feel free to [report bugs](http://github.com/colorhook/att/issues) or feature requests.
+Please feel free to [report bugs](http://github.com/colorhook/att/issues) or [feature requests](https://github.com/mikeal/request).
 You can send me private message on `github`, or send me an email to: [colorhook@gmail.com]
