@@ -47,7 +47,7 @@ var supportedFileType = ["html", "htm", "jpg", "jpeg", "gif", "png", "js", "css"
 var toAbsolutePath = true;
 var datauri = true;
 
-var minifyFile = function (file, callback) {
+var minifyFile = exports.minifyFile = function (file, callback) {
 	var toName = toPath(file);
 	var options = {
 		from: file,
@@ -64,10 +64,11 @@ var minifyFile = function (file, callback) {
 		} else {
 			console.log("minify success: %s -> %s", file, path.basename(toName));
 		}
-		callback && callback(err);
 		if (interceptor) {
 			interceptor.execute(toName);
 		}
+		callback && callback(err, toName);
+		
 	});
 };
 

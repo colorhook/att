@@ -1,10 +1,10 @@
 {
-    "currentWorkspace": "att",
+    "currentWorkspace": "default",
     "workspaces": {
         "default": "D:\\Develop\\_att_b\\att_work\\zhengxie\\k2\\svn",
         "att": "D:\\Develop\\git\\att"
     },
-    "cdnEndpoint": "http://wireless.aliyun-inc.com/space/user/zhengxie/upload.php",
+    "cdnEndpoint": "http://m.alicdn.com/att_server/upload.php",
     "commands": {
         "htmlminifier": {
             "removeComments": true,
@@ -26,16 +26,16 @@
         },
         "datauri": {
             "fixIE": true,
-			"maxSize": 32700
+            "maxSize": 32700
         }
     },
     "external-commands": [],
     "plugins": {
         "minify": {
-			"datauri": true,
-			"toAbsolutePath": true,
-			"mapper": "./mappers/VersionMapper"
-		}
+            "datauri": true,
+            "toAbsolutePath": true,
+            "mapper": "./mappers/VersionMapper"
+        }
     },
     "external-plugins": [
         "D:\\Develop\\git\\att-plugins\\"

@@ -1,6 +1,10 @@
 # ATT - Auto Task Tool
 ATT is a terminal tool for develop & deploy web project easier and faster.
 
+## Install
+
+...prepare publish to npm
+
 ## Usage
 ```shell
 att <plugin> <...args>
@@ -11,26 +15,71 @@ att <plugin> <...args>
 * att minify icon.png  压缩png
 * att minify app.js  压缩js
 * att minify style.css  压缩css
+* att smushit icon.png 压缩图片并替换原有图片
 * att datauri style.css  对css中的图片进行datauri编码
 
 ## Plugins
 
-#### att jslint/jshint
-> check javascript syntax.
+#### att jshint
+> 检查JavaScript预发
 
 #### att csslint
-> check css syntax.
+> 检查CSS语法
 
 #### att minify
-> minify html, css, js & images.
+> 压缩HTML, CSS, JavaScript和图片
 
 #### att datauri
-> base64 the image in css.
+> 对CSS文件中的图片进行Base64编码
+
+#### att workspace
+>添加、查看、删除、修改工作目录。
+
++ 查看工作目录列表和当前的工作目录
+```shell
+att workspace list
+```
+
++ 添加一个工作目录
+```shell
+att workspace add workSVN="D:\work\svn"
+```
+
++ 修改工作目录
+```shell
+att workspace set workSVN="D:\work\svn"
+```
+
++ 删除工作目录
+```shell
+att workspace delete workSVN
+```
+
++ 设置当前工作目录
+```shell
+att workspace goto workSVN
+```
+
+#### att cdn
+> 传输本地文件到CDN服务器上
+* 首先，使用CDN上传功能需要在CDN服务器上部署一个HTTP service, 通过一个API接口来让att控制台和CDN服务器进行文件传输。
+* 其次，在att的配置文件att.json中需要配置当前的工作目录，该目录一般为某个版本库的根路径，可以配置多个工作目录。
++ 上传到测试CDN
+
+```shell
+att cdn /product/project/*/**/*.js
+```
+
++ 上传到测试CDN的同时上传到线上CDN
+
+```shell
+att cdn /product/project/*/**/*.js -p
+```
 
 #### att build
-> build a task by configuration file.
+> 根据XML配置文件来build工程
 
-+ Define a build configuration file named att.xml.
++ 先定义一个att.xml配置文件
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>

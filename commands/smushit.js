@@ -60,10 +60,10 @@ exports.execute = function (options, callback) {
             return callback(err);
         }
         if (response.error) {
-            return callback(new Error(response.error));
+            return callback(new Error(response.error), response);
         }
         saveBinary(response.dest, to, function () {
-            callback();
+            callback(null, response);
         }, function (err) {
             callback(err || new Error("In smushit task, error occur while save image"));
         });

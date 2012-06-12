@@ -7,7 +7,7 @@ exports.name = "workspace";
 /**
  * plugin description
  */
-exports.description = "set or list your workspace";
+exports.description = "list or manage your workspace";
 /**
  * plugin action
  */
@@ -18,8 +18,9 @@ exports.action = function () {
 		commands = ["add", "delete", "list", "set", "goto"],
 		info = (process.argv[4] || "").split("="),
 		ws = info[0].trim(),
-		value = info[1] || "";
+		value = (info[1] || "").trim();
 	
+
 	function list(){
 		var current =  AttUtil.storage('currentWorkspace'),
 			spaces = AttUtil.storage('workspaces');
@@ -35,11 +36,12 @@ exports.action = function () {
 		case "delete":
 			if(!ws){
 				console.log("please specify the workspace need to be delete.");
-			}else if(!workspaces[ws]){
+			}else if(workspaces[ws] === undefined){
 				console.log("the workspace %s is not exists.", ws);
 			}else{
 				delete workspaces[ws];
 				AttUtil.storage('workspaces', workspaces);
+				list();
 			}
 			break;
 		case "add":
@@ -50,6 +52,7 @@ exports.action = function () {
 			}else{
 				workspaces[ws] = value;
 				AttUtil.storage('workspaces', workspaces);
+				list();
 			}
 			break;
 		case "set":
@@ -60,6 +63,7 @@ exports.action = function () {
 			}else{
 				workspaces[ws] = value;
 				AttUtil.storage('workspaces', workspaces);
+				list();
 			}
 			break;
 		
@@ -67,7 +71,8 @@ exports.action = function () {
 			if(!workspaces[ws]){
 				console.log("the workspace %s is not exists.", ws);	
 			}else{
-				AttUtil.storage('currentWorkspaces', ws);
+				AttUtil.storage('currentWorkspace', ws);
+				list();
 			}
 			break;
 	}	
