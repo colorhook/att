@@ -195,5 +195,5 @@ ATT is free to use under MIT license.
 
 ## Bugs & Feedback
 
-Please feel free to [report bugs](http://github.com/colorhook/att/issues) or [feature requests](https://github.com/mikeal/request).
+Please feel free to [report bugs](http://github.com/colorhook/att/issues) or [feature requests](http://github.com/colorhook/att/pulls).
 You can send me private message on `github`, or send me an email to: [colorhook@gmail.com]
