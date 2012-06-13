@@ -25,18 +25,16 @@ exports.description = "upload assets to the CDN";
  */
 var updateProductCDN = false,
 	autoDataURI = false,
+	ignoreDataURIPrompt = false,
 	mapper,
     minifySupportedFileType = ["html", "htm", "jpg", "jpeg", "gif", "png", "js", "css"],
     minifyNotYesSupportedFileType = ["jpg", "jpeg", "gif", "png"],
-    currentWorkspace = att.configuration.currentWorkspace || "default",
-    workspaceRoot, cdnEndpoint,
+    workspaceRoot, 
+	cdnEndpoint,
+	validTopDirectories = null,
 	checkJS = true,
 	checkCSS = true;
 
-if (!att.configuration.workspaces) {
-    att.configuration.workspaces = {};
-}
-workspaceRoot = att.configuration.workspaces[currentWorkspace];
 
 /**
  * 根据文件分析出CDN上传路径
@@ -50,9 +48,18 @@ var analyticsCDNPath = function (filename) {
 		if (p.indexOf("/..") == 0 || p == "/") {
 			return false;
 		}
-	} else {
-		return p;
 	}
+	if(validTopDirectories){
+		var topDir = p.match(/^\/(\w+)\//)[1];
+
+		if(!topDir){
+			return false;
+		}
+		if(validTopDirectories.indexOf(topDir) === -1){
+			return false;
+		}
+	}
+	
 	return p;
 }
 
@@ -152,6 +159,7 @@ var minifyFile = function(file, datauri, callback){
 	if (toName.match(/\.css$/i)) {
 		options.datauri = datauri;
 		options.toAbsolutePath = true;
+		options.workspaceRoot = workspaceRoot;
 	}
 	MinifyCommand.execute(options, function (err) {
 		if (err) {
@@ -201,9 +209,19 @@ exports.initialize = function(options){
 	if(options.checkCSS !== undefined){
 		checkCSS = options.checkCSS;
 	}
+	if(options.ignoreDataURIPrompt !== undefined){
+		ignoreDataURIPrompt = options.ignoreDataURIPrompt;
+	}
+	if(options.defaultEnableDataURI !== undefined){
+		autoDataURI = options.defaultEnableDataURI;
+	}
+	if(options.validTopDirectories !== undefined){
+		validTopDirectories = options.validTopDirectories;
+	}
 	if (options.mapper) {
         mapper = require(__dirname + "/../" + options.mapper);
     }
+	workspaceRoot = (options.workspaces || {})[options.currentWorkspace];
 	cdnEndpoint = options.endpoint;
 }
 /**
@@ -211,9 +229,7 @@ exports.initialize = function(options){
  */
 exports.action = function () {
     if (!workspaceRoot) {
-        console.log("please set your workspace first");
-        console.log("type <att workspace> to set");
-        return;
+      return  console.log("please set your workspace first");
     }
 	if(!cdnEndpoint){
 		return console.log("please set cdn endpoint first");
@@ -238,7 +254,7 @@ exports.action = function () {
 		});
 
         if (files.length === 0) {
-            return console.log("no file matched.");
+            return console.log("no assets file matched to the cdn valid path.");
         }
 	
 		AttUtil.doSequenceTasks(files, function (file, callback) {
@@ -287,7 +303,7 @@ exports.action = function () {
 						callback2(yes);
 					});
 				};
-				if(extname === "css"){
+				if(extname === "css" && !ignoreDataURIPrompt){
 					promptDataURI(function(datauri){
 						autoDataURI = datauri;
 						promptMinify();

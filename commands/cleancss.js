@@ -7,12 +7,11 @@ var fs = require('fs'),
 /**
  * minify css
  */
-var transform = exports.transform = function (input, basedir, datauri, fixIE, toAbsolutePath) {
-		var workspaceRoot = att.configuration.workspaces[att.configuration.currentWorkspace];
+var transform = exports.transform = function (input, basedir, datauri, fixIE, toAbsolutePath, workspaceRoot) {
 		if(datauri){
 			input = DataURICommand.transform(input, basedir, fixIE);
 		}
-		if((toAbsolutePath && workspaceRoot) || true){
+		if(toAbsolutePath && workspaceRoot){
 			input = input.replace(/background.*url\(\s*\"?\'?(\S*)\.(png|jpg|jpeg|gif|svg\+xml)\"?\'?\s*\).+/gi, function (match, file, type) {
 				if(!file || file[0] === '/'){
 					return match;
@@ -49,7 +48,7 @@ exports.execute = function (options, callback) {
         return callback(err);
     }
 
-    fileContent = transform(fileContent, path.dirname(from), options.datauri, options.fixIE, options.toAbsolutePath);
+    fileContent = transform(fileContent, path.dirname(from), options.datauri, options.fixIE, options.toAbsolutePath, options.workspaceRoot);
 	
     try {
         fs.writeFileSync(to, fileContent, charset);
