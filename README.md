@@ -65,33 +65,7 @@ att tmp
 ```shell
 att tmp clear
 ```
-#### att workspace
->添加、查看、删除、修改工作目录。
 
-+ 查看工作目录列表和当前的工作目录
-```shell
-att workspace list
-```
-
-+ 添加一个工作目录
-```shell
-att workspace add workSVN="D:\work\svn"
-```
-
-+ 修改工作目录
-```shell
-att workspace set workSVN="D:\work\svn"
-```
-
-+ 删除工作目录
-```shell
-att workspace delete workSVN
-```
-
-+ 设置当前工作目录
-```shell
-att workspace goto workSVN
-```
 
 #### att cdn
 > 传输本地文件到CDN服务器上，这个命令可以将本机js, css, image等资源文件上传都CDN上。
