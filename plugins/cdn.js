@@ -45,17 +45,13 @@ var analyticsCDNPath = function (filename) {
 	if (p.indexOf("/..") == 0 || p == "/") {
 		p = "/" + path.relative(workspaceRoot, path.dirname(filename));
 		p = p.replace(/\\/g, "/");
-		if (p.indexOf("/..") == 0 || p == "/") {
-			return false;
-		}
+	}
+	var matches = p.match(/^\/(\w+)/);
+	if(!matches || !matches[1]){
+		return false;
 	}
 	if(validTopDirectories){
-		var topDir = p.match(/^\/(\w+)\//)[1];
-
-		if(!topDir){
-			return false;
-		}
-		if(validTopDirectories.indexOf(topDir) === -1){
+		if(validTopDirectories.indexOf(matches[1]) === -1){
 			return false;
 		}
 	}
