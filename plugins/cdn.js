@@ -70,6 +70,7 @@ var uploadCDN = function (file, notTest, callback) {
             filepath = analyticsCDNPath(file),
             msg = "upload " + (notTest ? "product" : "test") + " cdn",
 			httpPath,
+			endpoint,
             json, params;
 		
 		if(cdnRoot){
@@ -88,8 +89,9 @@ var uploadCDN = function (file, notTest, callback) {
             filepath: filepath,
             target: notTest ? "cdn_home" : "test_home"
         }
+		endpoint = notTest ? stagingEndpoint : testEndpoint;
 
-        AttUtil.upload(cdnEndpoint, file, params, function (data) {
+        AttUtil.upload(endpoint, file, params, function (data) {
             try {
                 json = JSON.parse(data);
             } catch (err) {
@@ -230,7 +232,8 @@ exports.initialize = function(options){
 		cdnRoot = options.cdnRoot;
 	}
 	workspaceRoot = (options.workspaces || {})[options.currentWorkspace];
-	cdnEndpoint = options.endpoint;
+	testEndpoint = options.testEndpoint;
+	stagingEndpoint = options.stagingEndpoint;
 }
 /**
  * plugin action
@@ -239,8 +242,11 @@ exports.action = function () {
     if (!workspaceRoot) {
       return  console.log("please set your workspace first");
     }
-	if(!cdnEndpoint){
-		return console.log("please set cdn endpoint first");
+	if(!testEndpoint){
+		return console.log("please set test cdn endpoint first");
+	}
+	if(!stagingEndpoint){
+		return console.log("please set staging cdn endpoint first");
 	}
     var query = process.argv[3],
         check = argv.c || argv.check,

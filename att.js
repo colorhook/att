@@ -7,6 +7,16 @@ var program = require("commander"),
     FileUtil = require("./core/FileUtil.js");
 
 
+program.confirm = function(str, fn, verbose){
+  var self = this;
+  this.prompt(str, function(ok){
+    if (!ok.trim()) {
+      return fn(true);
+    }
+    fn(/^y|yes|ok|true$/i.test(ok));
+  });
+};
+
 var plugins = {},
     commandMap = {},
     configuration = exports.configuration = AttUtil.storage(),
