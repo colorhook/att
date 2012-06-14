@@ -8,3 +8,5 @@ commands/xmpp.js.todo
 commands/qr.js
 cli.js
 att.bat
+.svn
+node_modules

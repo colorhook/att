@@ -16,7 +16,7 @@ exports.name = "datauri";
 /**
  * plugin description
  */
-exports.description = "datauri";
+exports.description = "把CSS中的背景图片转换成DataURI";
 
 
 var toPath = function (file) {

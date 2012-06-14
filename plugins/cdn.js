@@ -6,6 +6,7 @@ var path = require("path"),
     att = require("../att.js"),
 	csslint = require("./csslint"),
 	jshint = require("jshint/lib/hint.js"),
+	wrench = require("wrench"),
     MinifyCommand = require("../commands/minify.js"),
     AttUtil = require("../core/AttUtil.js");
 
@@ -18,7 +19,7 @@ exports.name = "cdn";
 /**
  * plugin description
  */
-exports.description = "upload assets to the CDN";
+exports.description = "上传静态资源到CDN";
 
 /**
  * upload to the CDN
@@ -30,6 +31,7 @@ var updateProductCDN = false,
     minifySupportedFileType = ["html", "htm", "jpg", "jpeg", "gif", "png", "js", "css"],
     minifyNotYesSupportedFileType = ["jpg", "jpeg", "gif", "png"],
     workspaceRoot, 
+	cdnRoot,
 	cdnEndpoint,
 	validTopDirectories = null,
 	checkJS = true,
@@ -67,8 +69,14 @@ var uploadCDN = function (file, notTest, callback) {
         var filename = path.basename(file),
             filepath = analyticsCDNPath(file),
             msg = "upload " + (notTest ? "product" : "test") + " cdn",
+			httpPath,
             json, params;
-
+		
+		if(cdnRoot){
+			httpPath = cdnRoot + filepath + "/" + filename;
+		}else{
+			httpPath = filepath + "/" + filename;
+		}
         if (filepath === false) {
             var err = "不支持该路径下的文件上传，请上传许可路径下的文件或者重新设置workspace";
             console.log(err);
@@ -89,7 +97,7 @@ var uploadCDN = function (file, notTest, callback) {
                 return console.log(data);
             }
             if (json.code == 200) {
-                console.log(msg + " success: " + file);
+                console.log(msg + " success: " + httpPath);
             } else {
                 console.log(msg + " failed: " + json.msgs);
             }
@@ -127,9 +135,10 @@ var doUpload = function (file, callback) {
  * 映射到tmp临时目录
  */
 var toPath = function (file) {
-	var p = path.resolve(__dirname + "/../tmp/" + file),
-		dirname = path.dirname(p),
-		basename = path.basename(p);
+	var cdnPath = analyticsCDNPath(file),
+		dirname = path.resolve(__dirname + "/../tmp" + cdnPath),
+		basename = path.basename(file),
+		p = path.resolve(dirname + "/" + basename);
 
 	if (mapper && mapper.transform) {
 		p = mapper.transform(file, p);
@@ -217,6 +226,9 @@ exports.initialize = function(options){
 	if (options.mapper) {
         mapper = require(__dirname + "/../" + options.mapper);
     }
+	if(options.cdnRoot){
+		cdnRoot = options.cdnRoot;
+	}
 	workspaceRoot = (options.workspaces || {})[options.currentWorkspace];
 	cdnEndpoint = options.endpoint;
 }
@@ -234,6 +246,9 @@ exports.action = function () {
         check = argv.c || argv.check,
         files = [];
 	
+	if(!query){
+		return console.log("file glob is required");
+	}
     //是否更新product CDN
     updateProductCDN = argv.p || argv.product
 	

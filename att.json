@@ -31,21 +31,20 @@
             "mapper": "./mappers/VersionMapper"
         },
 		"cdn": {
-			"endpoint": "http://m.alicdn.com/att_server/upload.php",
-			"defaultEnableDataURI": true,
-			"ignoreDataURIPrompt": false,
+			"endpoint": "http://m-source.aliyun.com/att_server/upload.php",
+			"cdnRoot": "http://m.alicdn.com",
+			"defaultEnableDataURI": false,
+			"ignoreDataURIPrompt": true,
 			"checkJS": false,
 			"checkCSS": false,
 			"mapper": "./mappers/VersionMapper",
-			"currentWorkspace": "att",
+			"currentWorkspace": "workspace",
 			"workspaces": {
-				"default": "D:\\Develop\\_att_b\\att_work\\zhengxie\\k2\\svn",
-				"att": "D:\\Develop\\git\\att"
+				"workspace": "D:\\Develop\\workspace"
 			},
-			"validTopDirectories": ["product", "cloudapp", "promotion"]
+			"validTopDirectories": ["product", "cloudapp", "promotion", "docs"]
 		}
     },
     "external-plugins": [
-        "D:\\Develop\\git\\att-plugins\\"
     ]
 }

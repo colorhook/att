@@ -14,7 +14,7 @@ exports.name = "smushit";
 /**
  * plugin description
  */
-exports.description = "smushit images";
+exports.description = "使用!Yahoo smush.it压缩图片，压缩后的图片会直接替换当前图片";
 
 /**
  * plugin action

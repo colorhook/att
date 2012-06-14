@@ -11,11 +11,11 @@ exports.name = "csslint";
 /**
  * plugin description
  */
-exports.description = "check css syntax";
+exports.description = "æ£€æŸ¥CSSè¯­æ³•";
 
 
 /**
- * ¼ì²éÄ³¸öÎÄ¼ş
+ * æ£€æŸ¥æŸä¸ªæ–‡ä»¶
  */
 var checkFile = exports.checkFile = function(file){
 	var content = fs.readFileSync(file, 'utf-8');

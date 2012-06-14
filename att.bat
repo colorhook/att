@@ -1,2 +1,2 @@
 @echo off
-node att.js %*
+node %~dp0\att.js %*

@@ -10,7 +10,7 @@ exports.name = "jshint";
 /**
  * plugin description
  */
-exports.description = "check js syntax";
+exports.description = "检查JS语法";
 
 /**
  * plugin action

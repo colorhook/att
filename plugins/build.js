@@ -11,7 +11,7 @@ exports.name = "build";
 /**
  * plugin description
  */
-exports.description = "build task by xml configuration";
+exports.description = "使用XML配置文件build工程";
 
 /**
  * plugin action

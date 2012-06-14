@@ -16,7 +16,7 @@ exports.name = "minify";
 /**
  * plugin description
  */
-exports.description = "minify js, css, image and html";
+exports.description = "压缩JS、CSS、图片和HTML，压缩后放到临时文件夹下";
 
 /**
  * plugin action

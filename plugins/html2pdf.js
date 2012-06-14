@@ -28,7 +28,7 @@ exports.name = "html2pdf";
 /**
  * plugin description
  */
-exports.description = "convert html to PDF";
+exports.description = "通过HTML生成PDF";
 
 /**
  * plugin action

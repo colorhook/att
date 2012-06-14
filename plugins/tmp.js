@@ -10,7 +10,7 @@ exports.name = "tmp";
 /**
  * plugin description
  */
-exports.description = "list or clear the temp files";
+exports.description = "查看或清除临时文件";
 
 /**
  * plugin action
