@@ -38,14 +38,18 @@ exports.action = function () {
         return console.log("the file glob is required");
     }
     glob(query, function (err, files) {
-
+		var arr = []
         files.forEach(function (item) {
 			var stat = fs.statSync(item);
-			if(!stat.isFile()){
-				return;
+			if(stat.isFile() && item.match(/\.css$/i)){
+				arr.push(item);
 			}
-			checkFile(item);
-            
         });
+		if(arr.length === 0){
+			return console.log("no css file matched");
+		}
+		arr.each(function(item){
+			checkFile(item);
+		});
     });
 };

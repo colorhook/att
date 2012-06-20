@@ -55,7 +55,7 @@ exports.action = function () {
         silent = argv.s || argv.silent,
         files = [];
     if (!query) {
-        return console.log("the file glob is required.");
+        return console.log("the file glob is required");
     };
     glob(query, function (err, matched) {
         matched.forEach(function (item) {
@@ -66,7 +66,7 @@ exports.action = function () {
         });
 
         if (files.length === 0) {
-            return console.log("no file matched.");
+            return console.log("no image file matched");
         }
         if (silent) {
             files.forEach(function (file) {

@@ -10,3 +10,4 @@ cli.js
 att.bat
 .svn
 node_modules
+*.exe

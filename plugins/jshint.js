@@ -25,13 +25,13 @@ exports.action = function () {
     glob(query, function (err, matches) {
 		matches.forEach(function(item){
 			var stat = fs.statSync(item);
-			if(stat.isFile()){
+			if(stat.isFile() && item.match(/\.js$/i)){
 				files.push(item);
 			}
 		});
 
 		if(files.length == 0){
-			return console.log("no file matched");
+			return console.log("no js file matched");
 		}
 			
         if (jshint.hint(files).length === 0) {

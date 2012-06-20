@@ -46,6 +46,5 @@
 			"validTopDirectories": ["product", "cloudapp", "promotion", "y"]
 		}
     },
-    "external-plugins": [
-    ]
+    "external-plugins": []
 }

@@ -17,7 +17,7 @@ var transform = exports.transform = function (input, basedir, datauri, fixIE, to
 					return match;
 				}
 				var fileName = basedir + "/" + file + '.' + type;
-				var absolutePath = path.normalize("/" + path.relative(workspaceRoot, path.dirname(fileName)) + "/" + file + "." + type);
+				var absolutePath = path.normalize("/" + path.relative(workspaceRoot, path.dirname(fileName)) + "/" + path.basename(file) + "." + type);
 				absolutePath = absolutePath.replace(/\\/g, "/");
 				return match.replace(/url\(\s*\"?\'?(\S*)\.(png|jpg|jpeg|gif|svg\+xml)\"?\'?\s*\)/i, "url("+absolutePath+")");
 			});

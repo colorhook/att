@@ -24,7 +24,7 @@ var plugins = {},
     argv = process.argv.slice(0, 3);
 
 //版本定义
-exports.version = "3.0.0alpha";
+exports.version = "3.0.0beta";
 
 //添加插件
 var addPlugin = exports.addPlugin = function (module) {

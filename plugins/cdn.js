@@ -24,7 +24,7 @@ exports.description = "上传静态资源到CDN";
 /**
  * upload to the CDN
  */
-var updateProductCDN = false,
+var updateCDNFlag = "test",
 	autoDataURI = false,
 	ignoreDataURIPrompt = false,
 	mapper,
@@ -64,11 +64,11 @@ var analyticsCDNPath = function (filename) {
 /**
  * 上传文件到测试CDN或者生产环境的CDN
  */
-var uploadCDN = function (file, notTest, callback) {
+var uploadCDN = function (file, flag, callback) {
 
         var filename = path.basename(file),
             filepath = analyticsCDNPath(file),
-            msg = "upload " + (notTest ? "product" : "test") + " cdn",
+            msg = "upload " + flag + " cdn",
 			httpPath,
 			endpoint,
             json, params;
@@ -87,10 +87,10 @@ var uploadCDN = function (file, notTest, callback) {
         params = {
             filename: filename,
             filepath: filepath,
-            target: notTest ? "cdn_home" : "test_home"
+            target: (flag === "product") ? "cdn_home" : "test_home",
+			overwrite: (flag === "product") ? "no" : "yes"
         }
-		endpoint = notTest ? stagingEndpoint : testEndpoint;
-
+		endpoint = flag === "test" ? testEndpoint  : stagingEndpoint;
         AttUtil.upload(endpoint, file, params, function (data) {
             try {
                 json = JSON.parse(data);
@@ -103,7 +103,7 @@ var uploadCDN = function (file, notTest, callback) {
             } else {
                 console.log(msg + " failed: " + json.msgs);
             }
-            callback && callback();
+            callback && callback(null,json);
         }, function (err) {
             process.stdin.destroy();
             callback(err);
@@ -112,17 +112,27 @@ var uploadCDN = function (file, notTest, callback) {
 
 
 /**
- * 做更新操作, 先更新test cdn, 再更新product cdn(需要命令行参数有标示)
+ * 做更新操作, 先更新test site, 再更新staging site, 再更新product site(需要命令行参数有标示)
  */
 var doUpload = function (file, callback) {
-	uploadCDN(file, false, function (err) {
+	uploadCDN(file, "test", function (err, json) {
 		if (err) {
 			callback(err);
-		} else if (updateProductCDN) {
-			uploadCDN(file, true, function (err) {
+		} else if(json.code != 200){
+			callback();
+		}else if (updateCDNFlag == "staging" || updateCDNFlag == "product") {
+			uploadCDN(file, "staging", function (err, json) {
 				if (err) {
 					callback(err);
-				} else {
+				}else if (updateCDNFlag == "product"){
+					uploadCDN(file, "product", function (err, json) {
+						if (err) {
+							callback(err);
+						} else {
+							callback();
+						}
+					});
+				} else{
 					callback();
 				}
 			});
@@ -183,7 +193,7 @@ var minifyFile = function(file, datauri, callback){
  */
 var handleFile = function (file, minifyFirst, callback) {
 	var uploadFunc = function(newFile){
-		 program.confirm("upload to CDN -> " + file + "? ", function (yes) {
+		 program.confirm("upload to " + updateCDNFlag + " CDN: " + file + "? ", function (yes) {
 			if (yes) {
 				doUpload(newFile, callback);
 			} else {
@@ -255,8 +265,14 @@ exports.action = function () {
 	if(!query){
 		return console.log("file glob is required");
 	}
-    //是否更新product CDN
-    updateProductCDN = argv.p || argv.product
+    //更新标记
+	if(argv.p || argv.product){
+		updateCDNFlag = "product";
+	}else if(argv.s || argv.staging){
+		updateCDNFlag = "staging";
+	}else{
+		updateCDNFlag = "test";
+	}
 	
     glob(query, function (err, matched) {
 		matched.forEach(function(item){
