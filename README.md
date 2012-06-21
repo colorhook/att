@@ -3,7 +3,9 @@ ATT is a terminal tool for front-end developers to make web project deployment e
 
 ## Install
 
+```shell
 npm install att -g
+```
 
 ## Usage
 ```shell
