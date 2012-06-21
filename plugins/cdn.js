@@ -19,7 +19,7 @@ exports.name = "cdn";
 /**
  * plugin description
  */
-exports.description = "上传静态资源到CDN";
+exports.description = "上传静态资源到CDN -s:同时更新staging环境 -p:同时更新product环境";
 
 /**
  * upload to the CDN

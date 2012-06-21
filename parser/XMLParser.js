@@ -54,10 +54,10 @@ var format, project,
         }
 
         //初始化插件
-        xml.child('plugin').each(function (item) {
+        xml.child('command').each(function (item) {
             var file = getAttr(item, 'file');
-            if (path.existSync(file)) {
-                att.addCommand(file);
+            if (path.existsSync(file)) {
+                att.addCommand(require(path.resolve(file)));
             } else {
                 throw new Error("The plugin not found at " + file);
             }
