@@ -48,7 +48,7 @@ exports.action = function () {
 		if(arr.length === 0){
 			return console.log("no css file matched");
 		}
-		arr.each(function(item){
+		arr.forEach(function(item){
 			checkFile(item);
 		});
     });
