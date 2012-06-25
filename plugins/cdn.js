@@ -178,8 +178,14 @@ var minifyFile = function(file, datauri, callback){
 		options.toAbsolutePath = true;
 		options.workspaceRoot = workspaceRoot;
 	}
-	MinifyCommand.execute(options, function (err) {
+	MinifyCommand.execute(options, function (err, response) {
 		if (err) {
+			if(response && response.error){
+				if(response.error.match(/No savings/i)){
+					console.log('Image no saving: ' + file);
+					return callback(null, toName);
+				}
+			}
 			console.log("Error occur at: " + file);
 			console.log(err);
 		} else {
