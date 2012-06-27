@@ -30,9 +30,13 @@
             "toAbsolutePath": true,
             "mapper": "./mappers/VersionMapper"
         },
+		"smushit": {
+			"service": "http://wireless.aliyun-inc.com/smush.att/ws.php"
+		},
 		"cdn": {
 			"testEndpoint": "http://10.249.199.15/att_server/upload.php",
 			"stagingEndpoint": "http://m-source.aliyun.com/att_server/upload.php",
+			"smushService": "http://wireless.aliyun-inc.com/smush.att/ws.php",
 			"cdnRoot": "http://m.alicdn.com",
 			"defaultEnableDataURI": false,
 			"ignoreDataURIPrompt": true,

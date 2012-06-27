@@ -20,11 +20,16 @@ exports.description = "使用!Yahoo smush.it压缩图片，压缩后的图片会
  * plugin action
  */
 var supportedFileType = ["jpg", "jpeg", "gif", "png"];
+var customService;
 
+exports.initialize = function(options){
+	customService = options.service;
+}
 var smushitFile = function (file, callback) {
 	var options = {
 		from: file,
-		to: file
+		to: file,
+		service: customService
 	};
 	SmushitCommand.execute(options, function (err, response) {
 		if (err) {

@@ -33,6 +33,7 @@ var updateCDNFlag = "test",
     workspaceRoot, 
 	cdnRoot,
 	cdnEndpoint,
+	customService,
 	validTopDirectories = null,
 	checkJS = true,
 	checkCSS = true;
@@ -171,7 +172,8 @@ var minifyFile = function(file, datauri, callback){
 	var toName = toPath(file);
 	var options = {
 		from: file,
-		to: toName
+		to: toName,
+		service: customService
 	};
 	if (toName.match(/\.css$/i)) {
 		options.datauri = datauri;
@@ -190,6 +192,7 @@ var minifyFile = function(file, datauri, callback){
 			console.log(err);
 		} else {
 			console.log("minify success: %s -> %s", file, path.basename(toName));
+			console.log("src_size: %s		dest_size: %s		percent: %s%", response.src_size, response.dest_size, response.percent); 
 		}
 		callback && callback(err, toName);
 	});
@@ -247,6 +250,8 @@ exports.initialize = function(options){
 	if(options.cdnRoot){
 		cdnRoot = options.cdnRoot;
 	}
+	customService = options.smushService;
+
 	workspaceRoot = (options.workspaces || {})[options.currentWorkspace];
 	testEndpoint = options.testEndpoint;
 	stagingEndpoint = options.stagingEndpoint;

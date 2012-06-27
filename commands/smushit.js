@@ -67,5 +67,6 @@ exports.execute = function (options, callback) {
         }, function (err) {
             callback(err || new Error("In smushit task, error occur while save image"));
         });
-    }, callback);
+    }, callback, options.service);
+
 };

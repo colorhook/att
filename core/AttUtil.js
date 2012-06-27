@@ -303,7 +303,7 @@ exports.upload = function(endpoint, file, params, success, fail, identify){
 		  success && success(resBody);
 	  });
 	};
-
+	
 	var postData = buildRequestBody(file, identify || "file", params);
 	options.headers =  {
 	  'Content-Type': postData.contentType,
@@ -312,8 +312,9 @@ exports.upload = function(endpoint, file, params, success, fail, identify){
 	httpRequest = http.request(options, onRequestCompleted);
 	httpRequest.write(postData.builder, "binary");
 	httpRequest.end();
-
+	
 	if(fail){
 		httpRequest.on('error', fail);
 	}
+	
 };
