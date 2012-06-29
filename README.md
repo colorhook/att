@@ -28,14 +28,21 @@ att <plugin> <...args>
 > 检查JavaScript语法
 
 ```shell
-att jshint */**/*.js
+att jshint **/*.js
 ```
 
 #### att csslint
 > 检查CSS语法
 
 ```shell
-att csshint */**/*.css
+att csshint **/*.css
+```
+
+#### att lint
+> 检查JS, CSS语法
+
+```shell
+att lint **/*.*
 ```
 
 #### att minify
@@ -49,6 +56,14 @@ att minify */**/*.*
 #### att datauri
 > 对CSS文件中的图片进行Base64编码
 和`att minify`一样，图片经过Base64后的CSS文件会存在于att的临时目录下，不会覆盖当前的文件。
+
+```shell
+att datauri */**/*.css
+```
+
+#### att smushit
+> 压缩图片
+压缩后的图片会替换当前文件，默认使用Yahoo smush.it服务进行压缩，也可以搭建自己的smush服务，查看：[`smush-server`](https://github.com/colorhook/smush-server)
 
 ```shell
 att datauri */**/*.css
@@ -113,6 +128,10 @@ att cdn /product/project/*/**/*.js -p
 	<target name="echo">
 		<echo>hello, att</echo>
 	</target>
+		
+	<target name="test">
+		<nodeunit>../../node-smushit/test</nodeunit>
+	</target>
 
 	<target name="clear">
 		<delete target="/your/file/or/dir/need/to/delete"/>
@@ -160,7 +179,7 @@ att cdn /product/project/*/**/*.js -p
 		</mail>
 	</target>
 
-	<target name="build" depends="echo,clear,create,minify,ftp,notify">
+	<target name="build" depends="echo,test,clear,create,minify,ftp,notify">
 	</target>
 </project>
 ```
