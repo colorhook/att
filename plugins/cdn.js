@@ -192,7 +192,9 @@ var minifyFile = function(file, datauri, callback){
 			console.log(err);
 		} else {
 			console.log("minify success: %s -> %s", file, path.basename(toName));
-			console.log("src_size: %s		dest_size: %s		percent: %s%", response.src_size, response.dest_size, response.percent); 
+			if(response){
+				console.log("src_size: %s		dest_size: %s		percent: %s%", response.src_size, response.dest_size, response.percent); 
+			}
 		}
 		callback && callback(err, toName);
 	});

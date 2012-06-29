@@ -46,7 +46,7 @@ var getPlugin = exports.getPlugin = function (name) {
 var loadPlugins = function (arr) {
         AttUtil.findFile(arr, function (item) {
             addPlugin(require(item));
-        }, "js");
+        }, "js", false);
     };
 //装载系统插件
 loadPlugins(__dirname + "/plugins/");
@@ -78,7 +78,7 @@ var executeCommand = exports.executeCommand = function (name, options, callback)
 var loadCommands = function (arr) {
         AttUtil.findFile(arr, function (item) {
             addCommand(require(item));
-        }, "js");
+        }, "js", false);
     };
 //装载系统命令
 loadCommands(__dirname + "/commands/");

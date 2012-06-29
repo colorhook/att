@@ -9,3 +9,5 @@ att.bat
 .svn
 node_modules
 *.exe
+plugins/commit.js
+plugins/commit

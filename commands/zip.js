@@ -17,11 +17,10 @@ exports.name = "zip";
 exports.execute = function (options, callback) {
 
     var from = options.from,
-        to = options.to,
-        files = options.files;
+        to = options.to;
 
     if (!from || !to) {
-        return callback(new Error("In zip task the dir and to options are required."));
+        return callback(new Error("In zip task the from and to options are required."));
     }
     var cwd = path.dirname(from);
     from = path.relative(cwd, from);

@@ -24,6 +24,7 @@ var getFiles = function (options) {
         if (!options.dir) {
             return files;
         }
+		
         if (options.matchBase === undefined) {
             options.matchBase = true;
         }
@@ -71,6 +72,7 @@ var getFiles = function (options) {
                 }
             }
         });
+		console.log(files);
         return files;
     };
 
