@@ -63,7 +63,8 @@ att datauri */**/*.css
 
 #### att smushit
 > 压缩图片
-压缩后的图片会替换当前文件，默认使用Yahoo smush.it服务进行压缩，也可以搭建自己的smush服务，查看：[`smush-server`](https://github.com/colorhook/smush-server)
+压缩后的图片会替换当前文件，默认使用Yahoo smush.it服务进行压缩，也可以搭建自己的smush服务.
+查看：[`smush-server`](https://github.com/colorhook/smush-server)
 
 ```shell
 att datauri */**/*.css
