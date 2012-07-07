@@ -28,7 +28,7 @@ exports.execute = function(options, callback){
 
 	dirname = path.dirname(target);
 
-	if(!path.existsSync(dirname)){
+	if(!fs.existsSync(dirname)){
 		try{
 			wrench.mkdirSyncRecursive(dirname, options.permission || 0777);
 		}catch(err){

@@ -37,7 +37,7 @@ exports.execute = function (options, callback) {
     }
 
     var toDir = path.dirname(to);
-    if (!path.existsSync(toDir)) {
+    if (!fs.existsSync(toDir)) {
         wrench.mkdirSyncRecursive(toDir, 0777);
     }
     try {

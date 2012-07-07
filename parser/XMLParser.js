@@ -56,7 +56,7 @@ var format, project,
         //初始化插件
         xml.child('command').each(function (item) {
             var file = getAttr(item, 'file');
-            if (path.existsSync(file)) {
+            if (fs.existsSync(file)) {
                 att.addCommand(require(path.resolve(file)));
             } else {
                 throw new Error("The plugin not found at " + file);

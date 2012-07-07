@@ -32,7 +32,7 @@ exports.action = function (query, options) {
     file = file || "att.xml";
 
 
-    if (!path.existsSync(file)) {
+    if (!fs.existsSync(file)) {
         return console.log("Buildfile: " + file + " does not exist!");
     }
 
@@ -41,7 +41,7 @@ exports.action = function (query, options) {
         file = path.resolve(file + "/att.xml");
     }
 
-    if (!path.existsSync(file)) {
+    if (!fs.existsSync(file)) {
         return console.log("Buildfile: " + file + " does not exist!");
     }
 

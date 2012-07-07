@@ -92,7 +92,7 @@ exports.copy = function (src, dst, callback) {
         }
 
         var dir = path.dirname(dst);
-        if (!path.existsSync(dir)) {
+        if (!fs.existsSync(dir)) {
             try {
                 wrench.mkdirSyncRecursive(dir, 0777);
             } catch (err) {

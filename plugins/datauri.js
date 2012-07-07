@@ -27,7 +27,7 @@ var toPath = function (file) {
         if (mapper && mapper.transform) {
             p = mapper.transform(file, p);
         }
-        if (!path.existsSync(dirname)) {
+        if (!fs.existsSync(dirname)) {
             try {
                 wrench.mkdirSyncRecursive(dirname, 0777);
             } catch (err) {}
