@@ -45,7 +45,7 @@ var execute = function (options, callback) {
             target = path.resolve(Project.currentProject.basedir, target);
         }
 
-        exists = path.existsSync(target);
+        exists = fs.existsSync(target);
 
         if (!exists) {
             return callback();

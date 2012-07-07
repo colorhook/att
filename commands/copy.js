@@ -42,7 +42,7 @@ exports.execute = function (options, callback) {
                 if (file) {
                     toPath = path.resolve(to + "/" + path.relative(dir, file));
                     toDir = path.dirname(toPath);
-                    if (!path.existsSync(toDir)) {
+                    if (!fs.existsSync(toDir)) {
                         try {
                             wrench.mkdirSyncRecursive(toDir, 0777);
                         } catch (err) {
