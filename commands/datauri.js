@@ -5,7 +5,7 @@ var fs = require('fs'),
 /**
  * transform the image url to base64 in the css.
  */
-var transform = exports.transform = function (input, basePath, fixIE, maxSize) {
+var transform = exports.transform = function (input, charset, basePath, fixIE, maxSize) {
         if (maxSize === undefined || maxSize <= 0) {
             maxSize = att.configuration.commands.datauri.maxSize;
         }
@@ -19,7 +19,7 @@ var transform = exports.transform = function (input, basePath, fixIE, maxSize) {
 				console.log("%s large then %s, fall to use external image.", fileName, Math.round(maxSize/1024 * 100) /100 + "KB");
                 return match;
             } else {
-                var base64 = fs.readFileSync(fileName).toString('base64');
+                var base64 = fs.readFileSync(fileName, charset).toString('base64');
                 base64 = 'url("data:image/' + (type === 'jpg' ? 'jpeg' : type) + ';base64,' + base64 + '")';
                 var r = match.replace(/url\(\s*\"?\'?(\S*)\.(png|jpg|jpeg|gif|svg\+xml)\"?\'?\s*\)/i, base64);
                 if (fixIE) {
@@ -60,7 +60,7 @@ exports.execute = function (options, callback) {
     } catch (err) {
         return callback(err);
     }
-    fileContent = transform(fileContent, path.dirname(from), fixIE, options.maxSize, options.toAbsolutePath);
+    fileContent = transform(fileContent, charset, path.dirname(from), fixIE, options.maxSize, options.toAbsolutePath);
     try {
         fs.writeFileSync(to, fileContent, charset);
     } catch (err) {
