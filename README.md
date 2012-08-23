@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/colorhook/att.png)](http://travis-ci.org/colorhook/att)
 # ATT - Auto Task Tool
 ATT is a terminal tool for front-end developers to make web project deployment easier and faster.
 
