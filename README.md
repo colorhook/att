@@ -135,12 +135,32 @@ att cdn /product/project/*/**/*.js -p
 	</target>
 
 	<target name="clear">
-		<delete target="/your/file/or/dir/need/to/delete"/>
+		<delete target="/your/file/or/dir/need/to/be/delete"/>
 	</target>
 	
 	<target name="create">
 	    <mkdir target="${build}"/>
 	    <touch target="${build}/README"/>
+	</target>
+
+	<target name="move">
+	    <move from="a.js" to="c/d/e/f.js"/>
+	    <move to="a-dir">
+		<fileset>
+		    <include glob="*.js"/>
+		</fileset>
+	    </move>
+	    <move frome="one-dir" to="another-dir"/>
+	</target>
+
+	<target name="copy">
+	    <copy from="a.js" to="c/d/e/f.js"/>
+	    <copy to="a-dir">
+		<fileset>
+		    <include glob="*.js"/>
+		</fileset>
+	    </move>
+	    <copy frome="one-dir" to="another-dir"/>
 	</target>
 
 	<target name="minify">

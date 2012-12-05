@@ -13,26 +13,31 @@ exports.name = "copy";
  * @option dir
  */
 exports.execute = function (options, callback) {
+    
+    console.log(options);
+
 
     var from = options.from,
         to = options.to,
         files = options.files,
-        dir = options.fileset.dir;
+        dir = options.fileset ? options.fileset.dir : null;
 
     if (!to) {
         return callback(new Error("In copy task the to option is required."));
     }
+    
+    if(from){
 
-    if (files) {
+         FileUtil.copy(from, to, callback);
+
+    }else if (files) {
         var copyFile = function () {
-
                 var file = files.shift();
                 if (!file) {
                     return callback();
                 }
 
-                var fdir = path.dirname(file),
-                    stat = fs.statSync(file),
+                var stat = fs.statSync(file),
                     toDir;
 
                 if (stat.isDirectory()) {
@@ -42,6 +47,8 @@ exports.execute = function (options, callback) {
                 if (file) {
                     toPath = path.resolve(to + "/" + path.relative(dir, file));
                     toDir = path.dirname(toPath);
+                    
+
                     if (!path.existsSync(toDir)) {
                         try {
                             wrench.mkdirSyncRecursive(toDir, 0777);
@@ -61,10 +68,8 @@ exports.execute = function (options, callback) {
                 }
             };
         copyFile();
+
     } else {
-        if (!from) {
-            return callback(new Error("The from option is required"));
-        }
-        FileUtil.copy(from, to, callback);
+        return callback(new Error("The from option or fileset is required"));
     }
 };

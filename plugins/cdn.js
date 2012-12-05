@@ -8,6 +8,7 @@ var path = require("path"),
 	jshint = require("jshint/lib/hint.js"),
 	wrench = require("wrench"),
     MinifyCommand = require("../commands/minify.js"),
+    FileUtil = require("../core/FileUtil.js"),
     AttUtil = require("../core/AttUtil.js");
 
 
@@ -19,7 +20,7 @@ exports.name = "cdn";
 /**
  * plugin description
  */
-exports.description = "上传静态资源到CDN -s:同时更新staging环境 -p:同时更新product环境";
+exports.description = "上传静态资源到CDN -s:同时更新staging环境 -p:同时更新product环境 --silent:略过提示 -i:略过资源压缩";
 
 /**
  * upload to the CDN
@@ -53,12 +54,12 @@ var analyticsCDNPath = function (filename) {
 	if(!matches || !matches[1]){
 		return false;
 	}
+
 	if(validTopDirectories){
 		if(validTopDirectories.indexOf(matches[1]) === -1){
 			return false;
 		}
 	}
-	
 	return p;
 }
 
@@ -179,6 +180,7 @@ var minifyFile = function(file, datauri, callback){
 		options.datauri = datauri;
 		options.toAbsolutePath = true;
 		options.workspaceRoot = workspaceRoot;
+		options.cdnRoot = cdnRoot;
 	}
 	MinifyCommand.execute(options, function (err, response) {
 		if (err) {
@@ -202,9 +204,12 @@ var minifyFile = function(file, datauri, callback){
 /**
  * 处理单个匹配到的文件
  */
-var handleFile = function (file, minifyFirst, callback) {
+var handleFile = function (file, minifyFirst, callback, silent) {
 	var uploadFunc = function(newFile){
-		 program.confirm("upload to " + updateCDNFlag + " CDN: " + file + "? ", function (yes) {
+        if(silent){
+            return doUpload(newFile, callback);
+        }
+		program.confirm("upload to " + updateCDNFlag + " CDN: " + file + "? ", function (yes) {
 			if (yes) {
 				doUpload(newFile, callback);
 			} else {
@@ -221,7 +226,16 @@ var handleFile = function (file, minifyFirst, callback) {
 			}
 		});
 	} else {
-		uploadFunc(file);
+        var toName = path.resolve(toPath(file));
+        fs.unlink(toName, function (err) {
+            FileUtil.copy(file, toName, function(e){
+                if(e){
+                    callback(e);
+                }else{
+                    uploadFunc(toName);
+                }
+            });
+        });
 	};
 };
 
@@ -273,8 +287,10 @@ exports.action = function () {
 	}
     var query = process.argv[3],
         check = argv.c || argv.check,
+        ignoreProcess = argv.i || argv.ignore,
+        silent = argv.silent,
         files = [];
-	
+
 	if(!query){
 		return console.log("file glob is required");
 	}
@@ -286,8 +302,9 @@ exports.action = function () {
 	}else{
 		updateCDNFlag = "test";
 	}
-	
+
     glob(query, function (err, matched) {
+
 		matched.forEach(function(item){
 			var cdnPath = analyticsCDNPath(item);
 			if(cdnPath === false){
@@ -304,7 +321,6 @@ exports.action = function () {
         }
 	
 		AttUtil.doSequenceTasks(files, function (file, callback) {
-
 			var extname = path.extname(file).replace(/\./, "").toLowerCase();
 
 			//检查 js, css syntax
@@ -332,19 +348,25 @@ exports.action = function () {
 			}
 
 			//自动判断是否要压缩代码
-			if (minifySupportedFileType.indexOf(extname) !== -1) {
+			if (!ignoreProcess && minifySupportedFileType.indexOf(extname) !== -1) {
 				var promptMinify = function(){
+                    if(silent){
+                        return handleFile(file, true, callback, silent);
+                    }
 					program.confirm("minify the file -> " + file + "? ", function (yes) {
 						if (yes) {
-							handleFile(file, true, callback);
+							handleFile(file, true, callback, silent);
 						} else if (minifyNotYesSupportedFileType.indexOf(extname) !== -1) {
-							handleFile(file, false, callback);
+							handleFile(file, false, callback, silent);
 						} else {
 							callback();
 						}
 					});
 				},
 				promptDataURI = function(callback2){
+                    if(silent){
+                        return callback2(autoDataURI);
+                    }
 					program.confirm("datauri the file -> " + file + "? ", function (yes) {
 						callback2(yes);
 					});
@@ -358,7 +380,7 @@ exports.action = function () {
 					promptMinify();
 				}
 			} else {
-				handleFile(file, false, callback);
+				handleFile(file, false, callback, silent);
 			}
 		}, function () {
 			process.stdin.destroy();

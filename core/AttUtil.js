@@ -35,6 +35,7 @@ exports.doParallelTasks = function (tasks, method, completed) {
     });
 };
 /**
+ *@version:
  * 读取文本内容中的注释信息
  */
 exports.readComment = function (key, content) {
@@ -48,6 +49,9 @@ exports.readComment = function (key, content) {
     matches[0].replace(/\*\s*@(\w+)\s*([^@\*]+)/g, function (match, v1, v2) {
         if (!ret && v1.trim() == key) {
             ret = v2.trim();
+            if(ret.charAt(0) == ':'){
+                ret = ret.substr(1).trim();
+            }
         }
     });
     return ret;

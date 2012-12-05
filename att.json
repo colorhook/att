@@ -47,7 +47,7 @@
 			"workspaces": {
 				"workspace": "D:\\Develop\\workspace"
 			},
-			"validTopDirectories": ["product", "cloudapp", "promotion", "y"]
+			"validTopDirectories": ["product", "cloudapp", "promotion", "y","k2","yui","easy"]
 		}
     },
     "external-plugins": []

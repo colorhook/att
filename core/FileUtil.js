@@ -86,23 +86,38 @@ exports.list = function (dir, options) {
  * copy file
  */
 exports.copy = function (src, dst, callback) {
+    if(!fs.existsSync(src)){
+       return callback(new Error("src file " + src + " not exists"));
+    }
+
     fs.stat(dst, function (err) {
         if (!err) {
             return callback(new Error("File " + dst + " exists."));
         }
-
-        var dir = path.dirname(dst);
-        if (!path.existsSync(dir)) {
+        
+       var isDirMode = fs.statSync(src).isDirectory()
+       var dir;
+       if(isDirMode){
+          dir = dst;
+       }else{
+           dir = path.dirname(dst);
+       }
+       if (!fs.existsSync(dir)) {
             try {
                 wrench.mkdirSyncRecursive(dir, 0777);
             } catch (err) {
                 return callback(err);
             }
         }
+        
+        if(isDirMode){
+            console.log(src);
+            wrench.copyDirSyncRecursive(src, dir);
+            return callback();
+        }
 
         var is = fs.createReadStream(src),
             os = fs.createWriteStream(dst);
-
 
         try {
             util.pump(is, os, callback);

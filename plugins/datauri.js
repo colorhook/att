@@ -4,10 +4,11 @@ var path = require("path"),
     argv = require('optimist').argv,
     wrench = require("wrench"),
     program = require("commander"),
+    AttUtil = require("../core/AttUtil"),
     DataURICommand = require("../commands/datauri.js");
 
 
-var mapper, interceptor, ieCompat = true;
+var mapper, interceptor, ieCompat = true, fixIE = true;
 /**
  * plugin name
  */
@@ -85,7 +86,7 @@ exports.action = function () {
         return console.log("the file glob is required");
     }
     glob(query, function (err, matches) {
-		matches.forEach(function(){
+		matches.forEach(function(item){
 			var stat = fs.statSync(item);
 			if(stat.isFile()){
 				files.push(item);
