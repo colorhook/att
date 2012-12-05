@@ -1,6 +1,6 @@
 {
     "name": "att",
-    "version": "3.0.0beta3",
+    "version": "3.0.0beta4",
 	"description": "an Auto Task Tool for Web Developers",
     "keywords": ["att", "web build", "minify", "web performance"],
 	"bin" : { "att" : "./bin/att" },
