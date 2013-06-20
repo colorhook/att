@@ -1,6 +1,8 @@
 # ATT - Auto Task Tool
 ATT is a terminal tool for front-end developers to make web project deployment easier and faster.
 
+This branch was deprecated, please use the latest version of att.
+
 ## Install
 
 ```shell
