@@ -1,2 +1,6 @@
 #!/usr/bin/env node
-require('../att.js');
+var att = require('../lib/att.js');
+var argv = require('optimist').argv;
+att.log.enabled = true;
+att.log.level = att.config.logLevel;
+att.parse(argv);

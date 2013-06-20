@@ -1,0 +1,62 @@
+{
+    "minify": {
+        "command": "minify",
+        "builtin": true,
+        "description": "minify html, css, js & image files"
+    },
+    "datauri": {
+        "command": "datauri",
+        "builtin": true,
+        "description": "datauri the css or image"
+    },
+    "hint": {
+        "command": "hint",
+        "builtin": true,
+        "description": "code syntax validation"
+    },
+    "cdn": {
+        "command": "cdn",
+        "builtin": true,
+        "description": "publish assets to CDN"
+    },
+    "beautify": {
+        "command": "beautify",
+        "builtin": true,
+        "description": "format the code to beautiful"
+    },
+    "createapp": {
+        "command": "createapp",
+        "builtin": true,
+        "description": "create app by template"
+    },
+    "server": {
+        "command": "server",
+        "builtin": true,
+        "description": "start att server"
+    },
+    "install": {
+        "command": "install",
+        "builtin": true,
+        "description": "install att plugin by npm module"
+    },
+    "uninstall": {
+        "command": "uninstall",
+        "builtin": true,
+        "description": "uninstall att plugin"
+    },
+    "list": {
+        "command": "list",
+        "builtin": true,
+        "description": "list all plugins installed"
+    },
+    "alias": {
+        "command": "alias",
+        "builtin": true,
+        "description": "give an alias for a plugin"
+    },
+    "help": {
+        "command": "help",
+        "builtin": true,
+        "description": "for more infomation on a specific command"
+    }
+}

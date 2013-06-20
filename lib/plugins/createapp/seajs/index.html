@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="baidu-site-verification" content=""/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+<link rel="icon" href="/images/icon.png">
+<link rel="apple-touch-icon" href="/images/button.png">
+<link rel="home" href="/"/>
+<link rel="index" href="/sitemap/"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title=""/>
+
+<link rel="stylesheet" href="">
+</head>
+<body>
+
+<!-- 引入menkr cdn 提供的seajs源 和 配置文件 -->
+<script src="http://cdn.menkr.com/sea.js" data-config="config/config.js" charset="utf-8"></script>
+<script>
+  // 使用别名(alias)加载组件
+  seajs.use(['jquery', 'moment'], function($, moment) {
+    $(document).ready(function() {
+  	console.log('Menkr CDN 上线时间距离现在：')
+  	console.log(moment("20130329", "YYYYMMDD").fromNow())
+    });
+  });
+</script>
+</body>
+</html>

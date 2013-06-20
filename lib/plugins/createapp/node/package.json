@@ -1,0 +1,40 @@
+{
+    "name": "",
+    "version": "x.y.z",
+	"description": "",
+    "keywords": [],
+    "main": "lib/main.js",
+    "engines": {
+        "node" : ">=0.8.0"
+    },
+	"author": "",
+	"maintainers": [{
+      "name": "",
+      "email": "",
+      "url": ""
+    }],
+	"bugs": {
+        "email": "",
+        "url": "http://github.com/xx/xxxx/issues"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "mocha": "~1.7.4",
+	    "should": "~1.2.1"
+    },
+    "scripts":{
+        "test": "mocha --reporter spec --timeout 5000 --require should"
+    },
+    "homepage": "https://github.com/xx/xxxx",
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/xx/xxxx.git"
+    },
+	"licenses": [
+        {
+            "type": "MIT",
+            "url": "http://github.com/xx/xxxx/blob/master/LICENSE"
+        }
+    ]
+}

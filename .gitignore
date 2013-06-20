@@ -1,13 +1,6 @@
+node_modules/
+lib/plugins/cdn.js
+test/plugins/cdn.js
 tmp
-docs
-docs/*
-plugins/help.js
-commands/xmpp.js.todo
-commands/qr.js
-cli.js
-att.bat
+example
 .svn
-node_modules
-*.exe
-plugins/commit.js
-plugins/commit

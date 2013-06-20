@@ -1,0 +1,7 @@
+module.exports = function(att){
+
+  this.execute = function(argv, callback, options){
+    callback(null, argv.a + argv.b);
+  }
+  
+}

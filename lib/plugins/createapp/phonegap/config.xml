@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns		= "http://www.w3.org/ns/widgets"
+	xmlns:gap	= "http://phonegap.com/ns/1.0"
+	id		= "com.phonegap.getting.started"
+	version 	= "1.0.0">
+
+	<name>@name@</name>
+
+	<description>phonegap demo</description>
+
+	<author href="@href@"
+		email="@email@">
+		@author@
+	</author>
+	
+	<!-- Default
+    <icon src="icon_72.png" />
+	-->
+	
+	<!-- Android
+	<icon src="icons/android/ldpi.png" gap:platform="android" gap:density="ldpi" />
+	<icon src="icons/android/mdpi.png" gap:platform="android" gap:density="mdpi" />
+	<icon src="icons/android/hdpi.png" gap:platform="android" gap:density="hdpi" />
+	<icon src="icons/android/xhdpi.png" gap:platform="android" gap:density="xhdpi" />
+	-->
+
+	<!-- iOS
+	<gap:splash src="splash/ios/Default.png" gap:platform="ios" width="320" height="480" />
+	<gap:splash src="splash/ios/Default_at_2x.png" gap:platform="ios" width="640" height="960" />
+	<gap:splash src="splash/ios/Default_iphone5.png" gap:platform="ios" width="640" height="1136" />
+	<gap:splash src="splash/ios/Default-Landscape.png" gap:platform="ios" width="1024" height="768" />
+	<gap:splash src="splash/ios/Default-Portrait.png" gap:platform="ios" width="768" height="1024" />
+	-->
+
+	<!-- retina iPad support: PhoneGap 2.5.0+ only 
+	<gap:splash src="splash/ios/Default-Landscape_at_2x.png" gap:platform="ios" width="2048" height="1496" />
+	<gap:splash src="splash/ios/Default-Portrait_at_2x.png" gap:platform="ios" width="1536" height="2008" />
+	-->
+
+	<gap:platforms>
+		<gap:platform name="android" minVersion="2.1" />
+		<gap:platform name="webos" />
+		<gap:platform name="symbian.wrt" />
+		<gap:platform name="blackberry" project="widgets"/>
+	</gap:platforms>
+
+
+
+	<feature name="http://api.phonegap.com/1.0/geolocation"/>
+	<feature name="http://api.phonegap.com/1.0/network"/>
+	<feature name="http://api.phonegap.com/1.0/notification"/>
+
+	<!-- sample preference specification -->
+	<!-- <preference name="autorotate" value="false" readonly="true"/> -->
+</widget>
