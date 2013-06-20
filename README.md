@@ -3,6 +3,11 @@ att - Auto Task Tool
 集成化的、易扩展的前端开发工具
 
 
+单元测试
+------
+[![travis build status](https://api.travis-ci.org/colorhook/att.png)](https://www.travis-ci.org/colorhook/att)
+
+
 ★使用方法
 --------
 
