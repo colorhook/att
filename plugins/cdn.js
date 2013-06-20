@@ -92,6 +92,7 @@ var uploadCDN = function (file, flag, callback) {
             target: (flag === "product") ? "cdn_home" : "test_home",
 			overwrite: (flag === "product") ? "no" : "yes"
         }
+
 		endpoint = flag === "test" ? testEndpoint  : stagingEndpoint;
         AttUtil.upload(endpoint, file, params, function (data) {
             try {
