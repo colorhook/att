@@ -60,7 +60,7 @@
       "mapper": "version",
       "flags": {
         "test": {
-          "url": "http://10.249.193.138/att_server/upload.php"
+          "url": "http://10.125.14.134/att_server/upload.php"
         },
         "staging": {
           "url": "http://m-source.aliyun.com/att_server/upload.php",

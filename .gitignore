@@ -1,6 +1,4 @@
 node_modules/
-lib/plugins/cdn.js
-test/plugins/cdn.js
 tmp
 example
 .svn
