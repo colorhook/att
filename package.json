@@ -4,6 +4,9 @@
 	"description": "an easy frontend developer tool",
     "keywords": ["auto task tool", "minify", "datauri", "frontend web development tool", "frontend workflow intergrator"],
     "main": "lib/att.js",
+    "bin": {
+       "att": "bin/att" 
+    },
     "engines": {
         "node" : ">=0.8.0"
     },

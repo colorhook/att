@@ -58,5 +58,10 @@
         "command": "help",
         "builtin": true,
         "description": "for more infomation on a specific command"
+    },
+    "att-formatjson": {
+        "command": "formatjson",
+        "description": "format json file",
+        "alias": "jsonf"
     }
 }
