@@ -60,10 +60,10 @@
       "mapper": "version",
       "flags": {
         "test": {
-          "url": "http://10.125.14.134/att_server/upload.php"
+          "url": "http://10.125.14.134/system/att/upload.php"
         },
         "staging": {
-          "url": "http://m-source.aliyun.com/att_server/upload.php",
+          "url": "http://10.125.14.135/system/att/upload.php",
           "depend": "test"
         },
         "production": {
