@@ -2,3 +2,4 @@ node_modules/
 tmp
 example
 .svn
+.DS_Store

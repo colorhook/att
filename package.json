@@ -59,5 +59,6 @@
             "type": "MIT",
             "url": "http://github.com/colorhook/att/blob/master/LICENSE"
         }
-    ]
+    ],
+    "bin" : { "att" : "./bin/att" }
 }
