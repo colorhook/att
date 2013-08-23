@@ -3,54 +3,34 @@ var path = require('path');
 var should =require('should');
 describe('plugin is an internal object for managing plugins: ', function(){
   
-  it('plugin.PLUGIN_CONFIG_PATH equal %att%/conf/plugin.json', function(){
-    var pluginFile = path.resolve(__dirname + "/../conf/plugins.json");
-    plugin.PLUGIN_CONFIG_PATH.should.equal(pluginFile);
-  });
 
-  it('plugin.data can get plugins', function(){
-    var data = plugin.data();
+  it('plugin.builtins() return all builtin module', function(){
+    var data = plugin.builtins();
     data.should.be.a('object');
   });
 
-  it('plugin.data can get & set plugins by key', function(){
-    var key = '__test_key__';
-
-    //get
-    var data = plugin.data(key);
-    should.not.exist(data);
-
-    //set
-    plugin.data(key, {command: 'test'});
-    data = plugin.data(key);
-    should.exist(data);
-
-    //remove
-    plugin.data(key, null);
-    data = plugin.data(key);
-    should.not.exist(data);
+  it('plugin.plugins() return all plugins', function(){
+    var data = plugin.plugins();
+    data.should.be.a('object');
   });
 
-  it('plugin can install plugin by npm module name', function(done){
-    var name = 'att-formatjson';
-    var command = 'att-formatjson';
-    var data = plugin.data(command);
-    should.not.exist(data);
-
-    plugin.install([name], function(e){
-      should.not.exist(e);
-      data = plugin.data(command);
-      should.exist(data);
-    
-      plugin.uninstall(name, function(e){
-        should.not.exist(e);
-        data = plugin.data(command);
-        should.not.exist(data);
-        
-        done();
-      });
-   
-    })
+  it('plugin.install() can install plugin', function(done){
+    var hasPlugin = function(name){
+       var arr = plugin.plugins();
+       for(var i=0, l = arr.length; i<l; i++){
+        if(arr[i].name === name){
+            return true;
+        }
+       }
+       return false;
+    }
+    plugin.install(['att-formatjson'], function(){
+        hasPlugin('att-formatjson').should.be.true;
+        plugin.uninstall(['att-formatjson'], function(){
+           hasPlugin('att-formatjson').should.be.false;
+           done();
+        });
+    });
   });
 
 });

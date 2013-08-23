@@ -1,5 +1,6 @@
 node_modules/
 tmp
 example
+plugins/*
 .svn
 .DS_Store

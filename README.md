@@ -14,32 +14,29 @@ att - Auto Task Tool
 ```shell
 ~>att
 
-Usage: att COMMAND [ARGS] [--silent]
+Usage: att COMMAND[:NAMESPACE] [ARGS] [--silent]
 
-   minify          minify html, css, js & image files
-   datauri         datauri the css or image
-   hint            code syntax validation
-   cdn             publish assets to CDN
-   beautify        format the code to beautiful
-   createapp       create app by template
-   install         install att plugin by npm module
-   uninstall       uninstall att plugin
-   list            list all plugins installed
-   alias           give an alias for a plugin
-   help            for more infomation on a specific command
-   server          startup a simple server
+   beautify     format the code to be beautiful
+   createapp    create app by template
+   datauri      datauri the css or image
+   help         for more infomation on a specific command
+   hint         code syntax validation
+   install      install att plugin by npm module
+   minify       minify html, css, js and image files
+   namespace    set a command running without :namespace by default
+   server       startup a simple server
+   uninstall    uninstall att plugin
 
 ```
 
-* `att jshint */**/*.js` 检查所有js文件
+* `att hint */**/*.js` 检查所有js文件
 * `att minify index.html`  压缩html
 * `att minify icon.png`  压缩png
 * `att minify app.js`  压缩js
 * `att minify style.css`  压缩css
-* `att smushit icon.png` 压缩图片并替换原有图片
+* `att minify icon.png` 压缩图片并替换原有图片
 * `att datauri style.css`  对css中的图片进行datauri编码
-* `att cdn app.js` 上传文件到CDN
-* `att build task` 根据XML文件build一个工程
+
 
 
 ### att install
@@ -48,14 +45,9 @@ Usage: att COMMAND [ARGS] [--silent]
 * 从npm库安装一个lib作为插件
 
 ```
-att install node-beautifier
+att install att-formatjson
 ```
 
-* 安装一个插件，并指定别名
-
-```
-att install node-beautifier --alias format
-```
 
 * 指定特定的npm环境
 
@@ -91,11 +83,11 @@ att datauri **/*.css
 ★Timeline
 ----------------
 
-### TODO 4.1.0
-* 加入sprite合并插件
-* <del>加入createapp創建項目插件</del>
-* <del>加入beautify格式化代碼插件</del>
-* <del>加入server插件</del>
+### 4.1.0
+* 加入createapp創建項目插件
+* 加入beautify格式化代碼插件
+* 加入server插件
+* 重构att的插件机制
 
 ### 4.0.0 (2013-3-12)
 * 插件延迟初始化

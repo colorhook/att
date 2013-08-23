@@ -1,6 +1,6 @@
 {
     "name": "att",
-    "version": "4.0.1",
+    "version": "4.1.0",
 	"description": "an easy frontend developer tool",
     "keywords": ["auto task tool", "minify", "datauri", "frontend web development tool", "frontend workflow intergrator"],
     "main": "lib/att.js",
@@ -25,12 +25,12 @@
     	"fileutil": "~1.1.1",
         "colors": "~0.6.0",
         "async": "~0.2.8",
+        "request": "~",
         "optimist": "~0.3.5",
         "glob": "~3.1.9",
-        "node-minifier": "~0.0.6",
+        "node-minifier": "~0.1.0",
         "jshint": "~0.9.1",
         "csslint": "~0.9.8",
-        "node-uploader": "~1.0.0",
         "minimatch": "~0.2",
         "less": "~1.3.3",
         "read": "~1.0.4",
@@ -39,15 +39,14 @@
         "js-beautify": "~0.4.2",
         "express": "~3.1.0",
         "ecstatic": "~0.4.1",
-        "portscanner": "~0.1.3",
-        "node-uuid": "~1.4.0"
+        "portscanner": "~0.1.3"
     },
     "devDependencies":{
         "mocha": "~1.7.4",
         "should": "~1.2.2"
     },
     "scripts":{
-        "test": "mocha --require should test test/plugins --timeout 10000 --globals hasCert --ignore-leaks"
+        "test": "mocha --require should test test/builtins --timeout 10000 --globals hasCert --ignore-leaks"
     },
     "homepage": "https://github.com/colorhook/att",
     "repository" : {

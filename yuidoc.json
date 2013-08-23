@@ -1,10 +1,10 @@
 {
     "name": "att",
     "description": "Auto Task Tool",
-    "version": "4.0.2",
+    "version": "4.1.0",
     "options": {
         "paths": ".",
-        "exclude": "node_modules,test,example,conf,bin,tmp",
+        "exclude": "node_modules,test,example,conf,bin,tmp,lib/builtins/createapp",
         "outdir": "docs"
     }
 }

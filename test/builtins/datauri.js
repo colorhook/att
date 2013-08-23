@@ -47,12 +47,12 @@ describe('[plugin] datauri is a att plugin for css datauri', function(){
     var file = __dirname + "/test.css";
     var fileTmp = __dirname + "/test.datauri.css";
     datauri.transformFile(file, fileTmp);
-    var content = att.fileutil.read(fileTmp);
+    var content = att.file.read(fileTmp);
     var match = content.match(/url\(\"data:.+;base64,(.+)\"\);/);
     match[1].should.be.ok;
     var base64 = require('fs').readFileSync(__dirname + "/m.gif").toString('base64');
     base64.should.be.equal(match[1]);
-    att.fileutil.delete(fileTmp);
+    att.file.delete(fileTmp);
   });
 
 });

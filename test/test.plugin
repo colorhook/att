@@ -1,7 +1,9 @@
 module.exports = function(att){
-
-  this.execute = function(argv, callback, options){
-    callback(null, argv.a + argv.b);
-  }
+  
+  att.register("att_test", "att test plugin", function(){
+    this.execute = function(argv, callback, options){
+       callback(null, argv.a + argv.b);
+    }
+  });
   
 }

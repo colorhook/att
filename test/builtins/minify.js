@@ -34,19 +34,5 @@ describe('[plugin] minify is a att plugin for code review', function(){
     minify.minifyFile.should.be.a('function')
   });
 
-  it("minifyJS remove log", function(done){
-    var fileutil = att.fileutil;
-    var file = __dirname + "/minify.test.js";
-    var content = "console.log(1);console.info(console);Y.log(Y)";
-    fileutil.write(file, content);
-    minify.minifyJS(file, file, function(){
-      var content = fileutil.read(file);
-      var noLogRemained = content.match(/(console|Y|log|info)/) == null;
-      fileutil.delete(file);
-      noLogRemained.should.be.true;
-      
-      done();
-    });
-  });
 
 });
