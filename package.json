@@ -25,7 +25,7 @@
     	"fileutil": "~1.1.1",
         "colors": "~0.6.0",
         "async": "~0.2.8",
-        "request": "~",
+        "request": "~2.27.0",
         "optimist": "~0.3.5",
         "glob": "~3.1.9",
         "node-minifier": "~0.1.0",
