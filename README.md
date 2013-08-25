@@ -83,16 +83,18 @@ att datauri **/*.css
 ★Timeline
 ----------------
 
-### 4.1.0
+### 4.1.0 (2013-8-25)
 * 加入createapp創建項目插件
 * 加入beautify格式化代碼插件
-* 加入server插件
+* 加入server插件，插件存储到att/plugins目录
 * 重构att的插件机制
+* js压缩使用UglifyJS2
+* 图片压缩优先使用本地native包压缩
 
 ### 4.0.0 (2013-3-12)
 * 插件延迟初始化
 * 安装卸载插件功能
-* 插件取别名的功能
+* 插件取别名的功能 (deprecated)
 * 支持npm模块作为插件安装
 * 移除了att build功能
 

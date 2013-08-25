@@ -1,0 +1,5 @@
+.DS_Store
+.git
+.svn
+.exe
+node_modules/
