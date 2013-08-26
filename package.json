@@ -25,7 +25,7 @@
     	"fileutil": "~1.1.1",
         "colors": "~0.6.0",
         "async": "~0.2.8",
-        "request": "~",
+        "request": "~2.27.0",
         "optimist": "~0.3.5",
         "glob": "~3.1.9",
         "node-minifier": "~0.1.0",
@@ -36,7 +36,7 @@
         "read": "~1.0.4",
         "npm": "~1.2.24",
         "semver": "~1.1.4",
-        "js-beautify": "~0.4.2",
+        "js-beautify": "~1.4.0",
         "express": "~3.1.0",
         "ecstatic": "~0.4.1",
         "portscanner": "~0.1.3"

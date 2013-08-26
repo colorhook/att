@@ -1,6 +1,6 @@
 {
-    "force": true,
-    "logLevel": 0,
-    "namespace":{
-    }
+  "force": true,
+  "logLevel": 0,
+  "namespace": {},
+  "name": null
 }
