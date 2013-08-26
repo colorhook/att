@@ -29,7 +29,7 @@
         "optimist": "~0.6.0",
         "glob": "~3.2.6",
         "node-minifier": "~0.1.0",
-        "jshint": "~2.1.10",
+        "jshint": "~0.9.1",
         "csslint": "~0.9.8",
         "minimatch": "~0.2",
         "less": "~1.4.2",
