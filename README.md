@@ -7,6 +7,12 @@ att - Auto Task Tool
 ------
 [![travis build status](https://api.travis-ci.org/colorhook/att.png)](https://www.travis-ci.org/colorhook/att)
 
+安装
+------
+
+```shell
+npm install att -g
+```
 
 ★使用方法
 --------
@@ -42,7 +48,7 @@ Usage: att COMMAND[:NAMESPACE] [ARGS] [--silent]
 ### att install
 
 
-* 从npm库安装一个lib作为插件
+* 从npm库安装一个library作为插件
 
 ```
 att install att-formatjson
@@ -75,13 +81,20 @@ att datauri **/*.css
 
 ★文档
 --------
-- 保证安装了yuidoc，如果没有请在命令行中执行`npm install yuidoc -g`进行安装
+- 确保安装了yuidoc，如果没有请在命令行中执行`npm install yuidoc -g`进行安装
 - 启动命令行，进入att目录，执行`yuidoc --server .`
 - 在浏览器中打开 http://localhost:3000 查看文档
 
 
 ★Timeline
 ----------------
+
+### 4.1.1 (2013-8-26)
+* 文档更新
+* 代码检查，代码优化
+* minify 增加参数 `--remove-console`, `--copyright`
+* hint 增加参数 `--node`
+* bugfix
 
 ### 4.1.0 (2013-8-25)
 * 加入createapp創建項目插件
