@@ -3,3 +3,4 @@
 .svn
 .exe
 node_modules/
+plugins/*
