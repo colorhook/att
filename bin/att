@@ -3,5 +3,5 @@
 var att = require('../lib/att.js');
 var argv = require('optimist').argv;
 att.log.enabled = true;
-att.log.level = att.config.logLevel;
+att.log.level = att.config.get('logLevel');
 att.parse(argv);
