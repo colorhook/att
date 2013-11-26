@@ -89,6 +89,9 @@ att datauri **/*.css
 ★Timeline
 ----------------
 
+### 4.1.2 (2013-11-26)
+* node-minifier 更新至0.1.2，增强压缩png图片的功能，依次使用`optipng`, `pngcrush`, `pngquant`, `advpng`优化png图片。
+
 ### 4.1.2 (2013-9-3)
 * node-minifier 更新至0.1.1，压缩JS时，默认将中文转成Unicode
 
