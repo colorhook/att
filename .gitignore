@@ -2,5 +2,6 @@ node_modules/
 tmp
 example
 plugins/*
+bin/att
 .svn
 .DS_Store
