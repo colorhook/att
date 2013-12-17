@@ -88,12 +88,14 @@ att datauri **/*.css
 
 ★Timeline
 ----------------
+### 4.1.4 (2013-12-17)
+* `node-minifier` 更新至0.1.3，[`UglifyJS2`](https://github.com/mishoo/UglifyJS2)存在[变量名混淆的bug](https://github.com/mishoo/UglifyJS2/issues/242)，在未发布修复版本之前使用hack的方式规避。
 
 ### 4.1.3 (2013-11-26)
-* node-minifier 更新至0.1.2，增强压缩png图片的功能，依次使用`optipng`, `pngcrush`, `pngquant`, `advpng`优化png图片。
+* `node-minifier` 更新至0.1.2，增强压缩png图片的功能，依次使用`optipng`, `pngcrush`, `pngquant`, `advpng`优化png图片。
 
 ### 4.1.2 (2013-9-3)
-* node-minifier 更新至0.1.1，压缩JS时，默认将中文转成Unicode
+* `node-minifier` 更新至0.1.1，压缩JS时，默认将中文转成Unicode
 
 ### 4.1.1 (2013-8-26)
 * 文档更新
