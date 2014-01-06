@@ -29,7 +29,6 @@ Usage: att COMMAND[:NAMESPACE] [ARGS] [--silent]
    hint         code syntax validation
    install      install att plugin by npm module
    minify       minify html, css, js and image files
-   namespace    set a command running without :namespace by default
    server       startup a simple server
    uninstall    uninstall att plugin
 
@@ -88,6 +87,10 @@ att datauri **/*.css
 
 ★Timeline
 ----------------
+
+### 4.1.5 (2013-12-31)
+* `node-minifier` 更新至0.1.4，使用最新版`UglifyJS2`，修复IE8下DataURI 32K限制判断不准确的bug。去除namespace内置插件。
+
 ### 4.1.4 (2013-12-17)
 * `node-minifier` 更新至0.1.3，[`UglifyJS2`](https://github.com/mishoo/UglifyJS2)存在[变量名混淆的bug](https://github.com/mishoo/UglifyJS2/issues/242)，在未发布修复版本之前使用hack的方式规避。
 
@@ -120,12 +123,10 @@ att datauri **/*.css
 * 移除了att build功能
 
 ### 3.3.0 （2013-1-30)
-
 * 更灵活的配置
 * 协同化的插件机制
 
 ### 3.2.0 (2012-12-30)
-
 * 基础插件
 * 压缩
 * 代码检查
@@ -133,6 +134,5 @@ att datauri **/*.css
 * 上传CDN
 
 ### 3.1.0 (2012-12-15)
-
 * 基础框架
 * 插件机制
