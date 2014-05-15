@@ -88,6 +88,9 @@ att datauri **/*.css
 ★Timeline
 ----------------
 
+### 4.1.6 (2014-05-15)
+* `att`增加`--overwrite`标记，输出是否覆盖原来的文件。
+
 ### 4.1.5 (2013-12-31)
 * `node-minifier` 更新至0.1.4，使用最新版`UglifyJS2`，修复IE8下DataURI 32K限制判断不准确的bug。去除namespace内置插件。
 
