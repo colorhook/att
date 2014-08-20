@@ -1,6 +1,6 @@
 {
     "name": "att",
-    "version": "4.1.9",
+    "version": "4.1.10",
 	"description": "an easy frontend developer tool",
     "keywords": ["auto task tool", "minify", "datauri", "frontend web development tool", "frontend workflow intergrator"],
     "main": "lib/att.js",
@@ -28,7 +28,7 @@
         "request": "~2.27.0",
         "optimist": "~0.6.0",
         "glob": "~3.2.6",
-        "node-minifier": "~0.1.9",
+        "node-minifier": "~0.2.0",
         "jshint": "~0.9.1",
         "csslint": "~0.9.8",
         "minimatch": "~0.2",
