@@ -88,6 +88,9 @@ att datauri **/*.css
 ★Timeline
 ----------------
 
+### 4.2.0  (2014-10-23)
+* 支持私有库 @ali/att-yunos-suite
+
 ### 4.1.8, 4.1.9 (2014-07-15)
 
 * 升级`node-minifier`，为`minify`插件增加图片默认不使用`pngquant`的配置
