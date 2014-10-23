@@ -1,6 +1,6 @@
 {
     "name": "att",
-    "version": "4.2.0",
+    "version": "4.2.2",
 	"description": "an easy frontend developer tool",
     "keywords": ["auto task tool", "minify", "datauri", "frontend web development tool", "frontend workflow intergrator"],
     "main": "lib/att.js",
