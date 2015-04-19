@@ -88,6 +88,10 @@ att datauri **/*.css
 ★Timeline
 ----------------
 
+### 4.2.3  (2015-4-19)
+* datauri支持直接转换图片 `att datauri banner.jpg -o banner.txt`
+* 将`util.puts`更好为`console.log`
+
 ### 4.2.0, 4.2.1, 4.2.2  (2014-10-23)
 * 支持私有库 @ali/att-yunos-suite
 
